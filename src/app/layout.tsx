@@ -19,27 +19,25 @@ export default async function RootLayout({
 }) {
   const session = await auth();
 
-  if (!session) {
-    redirect("/auth/signin");
-  }
-
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} dark:bg-gray-900`}>
         <div className="min-h-screen">
-          <header className="bg-white/5 border-b border-white/10 shadow-sm">
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-white">AI TODO</h1>
-                <div className="flex items-center gap-4">
-                  <span className="text-gray-300">
-                    Signed in as {session.user?.email}
-                  </span>
-                  <SignOutButton />
+          {session && (
+            <header className="bg-white/5 border-b border-white/10 shadow-sm">
+              <div className="container mx-auto px-4 py-4">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-2xl font-bold text-white">AI TODO</h1>
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-300">
+                      Signed in as {session.user?.email}
+                    </span>
+                    <SignOutButton />
+                  </div>
                 </div>
               </div>
-            </div>
-          </header>
+            </header>
+          )}
           {children}
         </div>
       </body>
