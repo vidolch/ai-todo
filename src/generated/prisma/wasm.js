@@ -123,8 +123,12 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  role: 'role',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  lastLogin: 'lastLogin',
+  isActive: 'isActive',
+  preferences: 'preferences'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -158,6 +162,8 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
 exports.Prisma.ListScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
@@ -167,11 +173,10 @@ exports.Prisma.TaskScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  severity: 'severity',
   completed: 'completed',
+  dueDate: 'dueDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  dueDate: 'dueDate',
   userId: 'userId',
   listId: 'listId'
 };
@@ -179,6 +184,7 @@ exports.Prisma.TaskScalarFieldEnum = {
 exports.Prisma.TagScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId'
@@ -189,9 +195,20 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 exports.Prisma.NullsOrder = {

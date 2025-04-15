@@ -20,13 +20,17 @@ model User {
   email         String?   @unique
   emailVerified String?
   image         String?
+  role          String    @default("USER")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+  isActive      Boolean   @default(true)
+  preferences   Json?
   accounts      Account[]
   sessions      Session[]
   lists         List[]
-  tags          Tag[]
   tasks         Task[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  tags          Tag[]
 }
 
 model Account {
@@ -65,37 +69,46 @@ model VerificationToken {
 }
 
 model List {
-  id        String   @id @default(cuid())
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks     Task[]
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@index([userId])
 }
 
 model Task {
   id          String    @id @default(cuid())
   title       String
   description String?
-  severity    String    @default("normal")
   completed   Boolean   @default(false)
+  dueDate     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  dueDate     DateTime?
   userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   listId      String?
-  list        List?     @relation(fields: [listId], references: [id], onDelete: SetNull)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  list        List?     @relation(fields: [listId], references: [id])
   tags        Tag[]
+
+  @@index([userId])
+  @@index([listId])
 }
 
 model Tag {
   id        String   @id @default(cuid())
   name      String
+  color     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks     Task[]
+
+  @@index([userId])
 }
