@@ -146,15 +146,17 @@ export function TaskList() {
       )}
 
       <div className="space-y-2">
-        {tasks.map((task) => (
-          <TaskComponent
-            key={task.id}
-            task={task}
-            onToggleComplete={handleToggleComplete}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
-          />
-        ))}
+        {tasks
+          .filter((task) => !editingTask || task.id !== editingTask.id)
+          .map((task) => (
+            <TaskComponent
+              key={task.id}
+              task={task}
+              onToggleComplete={handleToggleComplete}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+            />
+          ))}
         {tasks.length === 0 && (
           <p className="text-center text-gray-400">No tasks yet. Add one to get started!</p>
         )}
