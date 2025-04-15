@@ -2,6 +2,7 @@ export interface Task {
   id: string;
   title: string;
   description?: string | null;
+  severity: "low" | "normal" | "critical";
   completed: boolean;
   dueDate?: Date | null;
   createdAt: Date;

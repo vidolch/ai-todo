@@ -42,8 +42,13 @@ export function TaskList() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...task,
+          title: task.title,
+          description: task.description,
+          severity: task.severity,
+          dueDate: task.dueDate,
           completed: !task.completed,
+          listId: task.listId,
+          tags: task.tags?.map(tag => tag.id),
         }),
       });
 

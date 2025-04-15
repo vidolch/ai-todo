@@ -10,6 +10,13 @@ import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface TaskFormProps {
   task?: Task | null;
@@ -20,6 +27,9 @@ interface TaskFormProps {
 export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
+  const [severity, setSeverity] = useState<"low" | "normal" | "critical">(
+    task?.severity || "normal"
+  );
   const [dueDate, setDueDate] = useState<Date | undefined>(
     task?.dueDate ? new Date(task.dueDate) : undefined
   );
@@ -29,6 +39,7 @@ export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
     onSubmit({
       title,
       description,
+      severity,
       dueDate,
     });
   };
@@ -54,6 +65,20 @@ export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
           className="bg-white/5 border-white/10 text-white placeholder:text-gray-400"
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="severity" className="text-white">Severity</Label>
+        <Select value={severity} onValueChange={(value: "low" | "normal" | "critical") => setSeverity(value)}>
+          <SelectTrigger className="bg-white/5 border-white/10 text-white">
+            <SelectValue placeholder="Select severity" />
+          </SelectTrigger>
+          <SelectContent className="bg-gray-800 border-white/10">
+            <SelectItem value="low" className="text-white hover:bg-white/10">Low</SelectItem>
+            <SelectItem value="normal" className="text-white hover:bg-white/10">Normal</SelectItem>
+            <SelectItem value="critical" className="text-white hover:bg-white/10">Critical</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">

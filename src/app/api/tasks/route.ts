@@ -36,12 +36,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, description, dueDate, listId, tags } = body;
+    const { title, description, dueDate, listId, tags, severity } = body;
 
     const task = await prisma.task.create({
       data: {
         title,
         description,
+        severity: severity || "normal",
         dueDate: dueDate ? new Date(dueDate) : null,
         completed: false,
         userId: session.user.id,

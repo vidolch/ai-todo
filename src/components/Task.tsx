@@ -5,6 +5,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Badge } from "./ui/badge";
 
 interface TaskProps {
   task: TaskType;
@@ -12,6 +13,12 @@ interface TaskProps {
   onDelete: (taskId: string) => void;
   onEdit: (task: TaskType) => void;
 }
+
+const severityColors = {
+  low: "bg-blue-500/20 text-blue-300",
+  normal: "bg-yellow-500/20 text-yellow-300",
+  critical: "bg-red-500/20 text-red-300",
+};
 
 export function Task({ task, onToggleComplete, onDelete, onEdit }: TaskProps) {
   return (
@@ -23,14 +30,19 @@ export function Task({ task, onToggleComplete, onDelete, onEdit }: TaskProps) {
           className="h-5 w-5"
         />
         <div className="flex-1">
-          <h3
-            className={cn(
-              "text-lg font-medium text-white",
-              task.completed && "line-through text-gray-500"
-            )}
-          >
-            {task.title}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3
+              className={cn(
+                "text-lg font-medium text-white",
+                task.completed && "line-through text-gray-500"
+              )}
+            >
+              {task.title}
+            </h3>
+            <Badge variant="secondary" className={cn("text-xs", severityColors[task.severity])}>
+              {task.severity.charAt(0).toUpperCase() + task.severity.slice(1)}
+            </Badge>
+          </div>
           {task.description && (
             <p className="text-sm text-gray-400">{task.description}</p>
           )}
