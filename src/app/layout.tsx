@@ -33,6 +33,12 @@ export default async function RootLayout({
                   </Link>
                   <div className="flex items-center gap-4">
                     <Link
+                      href="/lists"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      Lists
+                    </Link>
+                    <Link
                       href="/profile"
                       className="text-gray-300 hover:text-white transition-colors"
                     >
