@@ -12,24 +12,24 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const { taskId } = await params;
     const body = await request.json();
-    const { title, description, dueDate, completed, listId, tags, severity } = body;
+    const { title, description, dueDate, listId, tags, severity, completed } = body;
 
     const task = await prisma.task.update({
       where: {
-        id: params.taskId,
+        id: taskId,
         userId: session.user.id,
       },
       data: {
         title,
         description,
-        severity,
+        severity: severity || "normal",
         dueDate: dueDate ? new Date(dueDate) : null,
         completed,
         listId,
         tags: {
-          set: [],
-          connect: tags?.map((tagId: string) => ({ id: tagId })),
+          set: tags?.map((tagId: string) => ({ id: tagId })),
         },
       },
       include: {
@@ -54,9 +54,11 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    const { taskId } = await params;
+
     await prisma.task.delete({
       where: {
-        id: params.taskId,
+        id: taskId,
         userId: session.user.id,
       },
     });
