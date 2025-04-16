@@ -11,6 +11,7 @@ interface List {
   description?: string | null;
   color?: string | null;
   tasks: { id: string }[];
+  _count: { tasks: number };
 }
 
 export function Lists() {
@@ -143,7 +144,7 @@ export function Lists() {
                 </div>
               </div>
               <div className="text-sm text-gray-400">
-                {list.tasks?.length || 0} {list.tasks?.length === 1 ? "task" : "tasks"}
+                {list._count.tasks} {list._count.tasks === 1 ? "task" : "tasks"}
               </div>
             </div>
           ))}
