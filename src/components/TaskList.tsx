@@ -122,12 +122,31 @@ export function TaskList() {
     }
   };
 
+  // Filter and sort tasks
+  const todoTasks = tasks
+    .filter((task) => !task.completed && (!editingTask || task.id !== editingTask.id))
+    .sort((a, b) => {
+      // If both have due dates, sort by due date
+      if (a.dueDate && b.dueDate) {
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+      // If only one has a due date, that one comes first
+      if (a.dueDate) return -1;
+      if (b.dueDate) return 1;
+      // If neither has a due date, sort by title
+      return a.title.localeCompare(b.title);
+    });
+
+  const doneTasks = tasks
+    .filter((task) => task.completed && (!editingTask || task.id !== editingTask.id))
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
   if (isLoading) {
     return <div className="text-white">Loading tasks...</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-white">Tasks</h2>
         <Button 
@@ -150,21 +169,42 @@ export function TaskList() {
         />
       )}
 
-      <div className="space-y-2">
-        {tasks
-          .filter((task) => !editingTask || task.id !== editingTask.id)
-          .map((task) => (
-            <TaskComponent
-              key={task.id}
-              task={task}
-              onToggleComplete={handleToggleComplete}
-              onDelete={handleDelete}
-              onEdit={handleEdit}
-            />
-          ))}
-        {tasks.length === 0 && (
-          <p className="text-center text-gray-400">No tasks yet. Add one to get started!</p>
-        )}
+      <div className="space-y-6">
+        <div>
+          <h3 className="text-xl font-semibold text-white mb-4">To Do</h3>
+          <div className="space-y-2">
+            {todoTasks.map((task) => (
+              <TaskComponent
+                key={task.id}
+                task={task}
+                onToggleComplete={handleToggleComplete}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))}
+            {todoTasks.length === 0 && (
+              <p className="text-center text-gray-400">No tasks to do. Add one to get started!</p>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-semibold text-white mb-4">Done</h3>
+          <div className="space-y-2">
+            {doneTasks.map((task) => (
+              <TaskComponent
+                key={task.id}
+                task={task}
+                onToggleComplete={handleToggleComplete}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))}
+            {doneTasks.length === 0 && (
+              <p className="text-center text-gray-400">No completed tasks yet.</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
