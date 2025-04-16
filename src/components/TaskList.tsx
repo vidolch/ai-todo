@@ -6,12 +6,14 @@ import { Task as TaskComponent } from "./Task";
 import { Button } from "./ui/button";
 import { Plus } from "lucide-react";
 import { TaskForm } from "./TaskForm";
+import { Input } from "./ui/input";
 
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [quickTaskTitle, setQuickTaskTitle] = useState("");
 
   useEffect(() => {
     fetchTasks();
@@ -28,6 +30,31 @@ export function TaskList() {
       console.error("Error fetching tasks:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleQuickAdd = async () => {
+    if (!quickTaskTitle.trim()) return;
+
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: quickTaskTitle,
+          severity: "normal",
+        }),
+      });
+
+      if (response.ok) {
+        const newTask = await response.json();
+        setTasks((prevTasks) => [newTask, ...prevTasks]);
+        setQuickTaskTitle("");
+      }
+    } catch (error) {
+      console.error("Error creating quick task:", error);
     }
   };
 
@@ -172,6 +199,23 @@ export function TaskList() {
       <div className="space-y-6">
         <div>
           <h3 className="text-xl font-semibold text-white mb-4">To Do</h3>
+          <div className="flex gap-2 mb-4">
+            <Input
+              type="text"
+              value={quickTaskTitle}
+              onChange={(e) => setQuickTaskTitle(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleQuickAdd()}
+              placeholder="Add a quick task..."
+              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+            />
+            <Button
+              onClick={handleQuickAdd}
+              disabled={!quickTaskTitle.trim()}
+              className="bg-blue-600 text-white hover:bg-blue-500 px-6"
+            >
+              Add
+            </Button>
+          </div>
           <div className="space-y-2">
             {todoTasks.map((task) => (
               <TaskComponent
