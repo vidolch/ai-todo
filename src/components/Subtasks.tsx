@@ -27,7 +27,7 @@ export function Subtasks({ task, onToggleComplete, onDelete, onEdit, onAddSubtas
   };
 
   return (
-    <div className="ml-6 mt-2">
+    <div className="mt-2">
       <div className="flex items-center gap-2 mb-2">
         <Button
           variant="ghost"

@@ -56,15 +56,6 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
           {task.severity === "low" && (
             <Badge variant="secondary">Low</Badge>
           )}
-          {task.listId && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-gray-400 hover:text-white"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          )}
           <Button
             variant="ghost"
             size="icon"
