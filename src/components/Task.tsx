@@ -60,6 +60,9 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
           {task.severity === "critical" && (
             <Badge variant="destructive">Critical</Badge>
           )}
+          {task.severity === "normal" && (
+            <Badge variant="default">Normal</Badge>
+          )}
           {task.severity === "low" && (
             <Badge variant="secondary">Low</Badge>
           )}
