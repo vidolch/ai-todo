@@ -4,6 +4,7 @@ import "./globals.css";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,8 +28,16 @@ export default async function RootLayout({
             <header className="bg-white/5 border-b border-white/10 shadow-sm">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center">
-                  <h1 className="text-2xl font-bold text-white">AI TODO</h1>
+                  <Link href="/" className="text-2xl font-bold text-white">
+                    AI TODO
+                  </Link>
                   <div className="flex items-center gap-4">
+                    <Link
+                      href="/profile"
+                      className="text-gray-300 hover:text-white transition-colors"
+                    >
+                      Profile
+                    </Link>
                     <span className="text-gray-300">
                       Signed in as {session.user?.email}
                     </span>
