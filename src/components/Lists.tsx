@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Edit2, Trash2, Plus } from "lucide-react";
 import { ListForm } from "@/components/ListForm";
+import { DeleteListDialog } from "@/components/DeleteListDialog";
 
 interface List {
   id: string;
@@ -19,6 +20,7 @@ export function Lists() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingList, setEditingList] = useState<List | null>(null);
+  const [deletingList, setDeletingList] = useState<List | null>(null);
 
   const fetchLists = async () => {
     try {
@@ -58,11 +60,36 @@ export function Lists() {
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (targetListId?: string, deleteTasks?: boolean) => {
+    if (!deletingList) return;
+
     try {
-      const response = await fetch(`/api/lists/${id}`, { method: "DELETE" });
+      // If moving tasks, update them first
+      if (targetListId) {
+        const response = await fetch(`/api/lists/${deletingList.id}/tasks`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ targetListId }),
+        });
+        if (!response.ok) throw new Error("Failed to move tasks");
+      }
+
+      // If deleting tasks, delete them first
+      if (deleteTasks) {
+        const response = await fetch(`/api/lists/${deletingList.id}/tasks`, {
+          method: "DELETE",
+        });
+        if (!response.ok) throw new Error("Failed to delete tasks");
+      }
+
+      // Delete the list
+      const response = await fetch(`/api/lists/${deletingList.id}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error("Failed to delete list");
+
       await fetchLists();
+      setDeletingList(null);
     } catch (error) {
       console.error("Error deleting list:", error);
     }
@@ -96,6 +123,15 @@ export function Lists() {
             setShowForm(false);
             setEditingList(null);
           }}
+        />
+      )}
+
+      {deletingList && (
+        <DeleteListDialog
+          list={deletingList}
+          otherLists={lists.filter(l => l.id !== deletingList.id)}
+          onClose={() => setDeletingList(null)}
+          onConfirm={handleDelete}
         />
       )}
 
@@ -136,7 +172,7 @@ export function Lists() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => handleDelete(list.id)}
+                    onClick={() => setDeletingList(list)}
                     className="text-gray-400 hover:text-white hover:bg-red-500/10"
                   >
                     <Trash2 className="h-4 w-4" />

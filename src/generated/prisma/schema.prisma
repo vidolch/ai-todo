@@ -86,15 +86,15 @@ model Task {
   id          String    @id @default(cuid())
   title       String
   description String?
-  completed   Boolean   @default(false)
   severity    String    @default("normal")
   dueDate     DateTime?
+  completed   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   userId      String
   listId      String?
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  list        List?     @relation(fields: [listId], references: [id])
+  list        List?     @relation(fields: [listId], references: [id], onDelete: SetNull)
   tags        Tag[]
 
   @@index([userId])
