@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { SignOutButton } from "@/components/auth/sign-out-button";
 import Link from "next/link";
+import { UserMenu } from "@/components/UserMenu";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,27 +28,26 @@ export default async function RootLayout({
             <header className="bg-white/5 border-b border-white/10 shadow-sm">
               <div className="container mx-auto px-4 py-4">
                 <div className="flex justify-between items-center">
-                  <Link href="/" className="text-2xl font-bold text-white">
-                    AI TODO
-                  </Link>
-                  <div className="flex items-center gap-4">
-                    <Link
-                      href="/lists"
-                      className="text-gray-300 hover:text-white transition-colors"
-                    >
-                      Lists
+                  <div className="flex items-center gap-6">
+                    <Link href="/" className="text-2xl font-bold text-white">
+                      AI TODO
                     </Link>
-                    <Link
-                      href="/profile"
-                      className="text-gray-300 hover:text-white transition-colors"
-                    >
-                      Profile
-                    </Link>
-                    <span className="text-gray-300">
-                      Signed in as {session.user?.email}
-                    </span>
-                    <SignOutButton />
+                    <nav className="flex items-center gap-4">
+                      <Link
+                        href="/"
+                        className="text-gray-300 hover:text-white transition-colors"
+                      >
+                        Tasks
+                      </Link>
+                      <Link
+                        href="/lists"
+                        className="text-gray-300 hover:text-white transition-colors"
+                      >
+                        Lists
+                      </Link>
+                    </nav>
                   </div>
+                  <UserMenu email={session.user?.email || ''} />
                 </div>
               </div>
             </header>
