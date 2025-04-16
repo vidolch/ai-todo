@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Task } from "@/types/task";
-import { Task as TaskComponent } from "./Task";
-import { Button } from "./ui/button";
-import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 import { TaskForm } from "./TaskForm";
-import { Input } from "./ui/input";
-import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
+import { TaskListHeader } from "./TaskListHeader";
+import { TaskSection } from "./TaskSection";
+import { ListSection } from "./ListSection";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 
 interface List {
   id: string;
@@ -344,16 +343,7 @@ export function TaskList() {
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Tasks</h2>
-        <Button 
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white hover:bg-blue-500"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Task
-        </Button>
-      </div>
+      <TaskListHeader onAddTask={() => setShowForm(true)} />
 
       {showForm && (
         <TaskForm
@@ -368,177 +358,54 @@ export function TaskList() {
 
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="space-y-6">
-          <div>
-            <h3 className="text-xl font-semibold text-white mb-4">To Do</h3>
-            <div className="flex gap-2 mb-4">
-              <Input
-                type="text"
-                value={quickTaskTitle}
-                onChange={(e) => setQuickTaskTitle(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleQuickAdd()}
-                placeholder="Add a quick task..."
-                className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-              />
-              <Button
-                onClick={() => handleQuickAdd()}
-                disabled={!quickTaskTitle.trim()}
-                className="bg-blue-600 text-white hover:bg-blue-500 px-6"
-              >
-                Add
-              </Button>
-            </div>
-            <Droppable droppableId={TODO_LIST_ID}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="space-y-2"
-                >
-                  {todoTasks.map((task, index) => (
-                    <Draggable key={task.id} draggableId={task.id} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={snapshot.isDragging ? "opacity-50" : ""}
-                        >
-                          <TaskComponent
-                            task={task}
-                            onToggleComplete={handleToggleComplete}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            onAddSubtask={handleAddSubtask}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                  {todoTasks.length === 0 && (
-                    <p className="text-center text-gray-400">No tasks to do. Add one to get started!</p>
-                  )}
-                </div>
-              )}
-            </Droppable>
-          </div>
+          <TaskSection
+            title="To Do"
+            tasks={todoTasks}
+            droppableId={TODO_LIST_ID}
+            quickAddValue={quickTaskTitle}
+            onQuickAddChange={setQuickTaskTitle}
+            onQuickAdd={() => handleQuickAdd()}
+            onToggleComplete={handleToggleComplete}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onAddSubtask={handleAddSubtask}
+            emptyMessage="No tasks to do. Add one to get started!"
+          />
 
           {lists.map((list) => (
-            <div key={list.id} className="border-t border-white/10 pt-6">
-              <div 
-                className="flex items-center gap-2 cursor-pointer mb-4"
-                onClick={() => toggleListCollapse(list.id)}
-              >
-                {collapsedLists[list.id] ? (
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
-                )}
-                <h3 
-                  className="text-xl font-semibold text-white"
-                  style={{ color: list.color || 'white' }}
-                >
-                  {list.name}
-                </h3>
-                <span className="text-sm text-gray-400">
-                  ({getListTasks(list.id).length} tasks)
-                </span>
-              </div>
-              {!collapsedLists[list.id] && (
-                <>
-                  <div className="flex gap-2 mb-4 ml-7">
-                    <Input
-                      type="text"
-                      value={quickTaskTitles[list.id] || ""}
-                      onChange={(e) => setQuickTaskTitles(prev => ({ ...prev, [list.id]: e.target.value }))}
-                      onKeyDown={(e) => e.key === "Enter" && handleQuickAdd(list.id)}
-                      placeholder={`Add a task to ${list.name}...`}
-                      className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-                    />
-                    <Button
-                      onClick={() => handleQuickAdd(list.id)}
-                      disabled={!quickTaskTitles[list.id]?.trim()}
-                      className="bg-blue-600 text-white hover:bg-blue-500 px-6"
-                    >
-                      Add
-                    </Button>
-                  </div>
-                  <Droppable droppableId={list.id}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="space-y-2 ml-7"
-                      >
-                        {getListTasks(list.id).map((task, index) => (
-                          <Draggable key={task.id} draggableId={task.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                className={snapshot.isDragging ? "opacity-50" : ""}
-                              >
-                                <TaskComponent
-                                  task={task}
-                                  onToggleComplete={handleToggleComplete}
-                                  onDelete={handleDelete}
-                                  onEdit={handleEdit}
-                                  onAddSubtask={handleAddSubtask}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                        {getListTasks(list.id).length === 0 && (
-                          <p className="text-center text-gray-400">No tasks in this list yet.</p>
-                        )}
-                      </div>
-                    )}
-                  </Droppable>
-                </>
-              )}
-            </div>
+            <ListSection
+              key={list.id}
+              list={list}
+              tasks={getListTasks(list.id)}
+              isCollapsed={collapsedLists[list.id]}
+              quickAddValue={quickTaskTitles[list.id] || ""}
+              onToggleCollapse={toggleListCollapse}
+              onQuickAddChange={(listId, value) => 
+                setQuickTaskTitles(prev => ({ ...prev, [listId]: value }))
+              }
+              onQuickAdd={handleQuickAdd}
+              onToggleComplete={handleToggleComplete}
+              onDelete={handleDelete}
+              onEdit={handleEdit}
+              onAddSubtask={handleAddSubtask}
+            />
           ))}
 
-          <div className="border-t border-white/10 pt-6">
-            <h3 className="text-xl font-semibold text-white mb-4">Done</h3>
-            <Droppable droppableId={DONE_LIST_ID}>
-              {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="space-y-2"
-                >
-                  {doneTasks.map((task, index) => (
-                    <Draggable key={task.id} draggableId={task.id} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={snapshot.isDragging ? "opacity-50" : ""}
-                        >
-                          <TaskComponent
-                            task={task}
-                            onToggleComplete={handleToggleComplete}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            onAddSubtask={handleAddSubtask}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                  {doneTasks.length === 0 && (
-                    <p className="text-center text-gray-400">No completed tasks yet.</p>
-                  )}
-                </div>
-              )}
-            </Droppable>
-          </div>
+          <TaskSection
+            title="Done"
+            tasks={doneTasks}
+            droppableId={DONE_LIST_ID}
+            quickAddValue=""
+            onQuickAddChange={() => {}}
+            onQuickAdd={() => {}}
+            onToggleComplete={handleToggleComplete}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onAddSubtask={handleAddSubtask}
+            showQuickAdd={false}
+            emptyMessage="No completed tasks yet."
+            className="border-t border-white/10 pt-6"
+          />
         </div>
       </DragDropContext>
     </div>
