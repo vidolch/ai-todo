@@ -29,6 +29,7 @@ export function TaskList() {
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [quickTaskTitle, setQuickTaskTitle] = useState("");
+  const [quickTaskTitles, setQuickTaskTitles] = useState<Record<string, string>>({});
   const [collapsedLists, setCollapsedLists] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -70,8 +71,9 @@ export function TaskList() {
     }
   };
 
-  const handleQuickAdd = async () => {
-    if (!quickTaskTitle.trim()) return;
+  const handleQuickAdd = async (listId?: string) => {
+    const title = listId ? quickTaskTitles[listId] : quickTaskTitle;
+    if (!title.trim()) return;
 
     try {
       const response = await fetch("/api/tasks", {
@@ -80,15 +82,20 @@ export function TaskList() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: quickTaskTitle,
+          title,
           severity: "normal",
+          listId,
         }),
       });
 
       if (response.ok) {
         const newTask = await response.json();
         setTasks((prevTasks) => [newTask, ...prevTasks]);
-        setQuickTaskTitle("");
+        if (listId) {
+          setQuickTaskTitles(prev => ({ ...prev, [listId]: "" }));
+        } else {
+          setQuickTaskTitle("");
+        }
       }
     } catch (error) {
       console.error("Error creating quick task:", error);
@@ -310,7 +317,7 @@ export function TaskList() {
                 className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
               />
               <Button
-                onClick={handleQuickAdd}
+                onClick={() => handleQuickAdd()}
                 disabled={!quickTaskTitle.trim()}
                 className="bg-blue-600 text-white hover:bg-blue-500 px-6"
               >
@@ -374,39 +381,58 @@ export function TaskList() {
                 </span>
               </div>
               {!collapsedLists[list.id] && (
-                <Droppable droppableId={list.id}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="space-y-2 ml-7"
+                <>
+                  <div className="flex gap-2 mb-4 ml-7">
+                    <Input
+                      type="text"
+                      value={quickTaskTitles[list.id] || ""}
+                      onChange={(e) => setQuickTaskTitles(prev => ({ ...prev, [list.id]: e.target.value }))}
+                      onKeyDown={(e) => e.key === "Enter" && handleQuickAdd(list.id)}
+                      placeholder={`Add a task to ${list.name}...`}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                    />
+                    <Button
+                      onClick={() => handleQuickAdd(list.id)}
+                      disabled={!quickTaskTitles[list.id]?.trim()}
+                      className="bg-blue-600 text-white hover:bg-blue-500 px-6"
                     >
-                      {getListTasks(list.id).map((task, index) => (
-                        <Draggable key={task.id} draggableId={task.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={snapshot.isDragging ? "opacity-50" : ""}
-                            >
-                              <TaskComponent
-                                task={task}
-                                onToggleComplete={handleToggleComplete}
-                                onDelete={handleDelete}
-                                onEdit={handleEdit}
-                              />
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                      {getListTasks(list.id).length === 0 && (
-                        <p className="text-center text-gray-400">No tasks in this list yet.</p>
-                      )}
-                    </div>
-                  )}
-                </Droppable>
+                      Add
+                    </Button>
+                  </div>
+                  <Droppable droppableId={list.id}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className="space-y-2 ml-7"
+                      >
+                        {getListTasks(list.id).map((task, index) => (
+                          <Draggable key={task.id} draggableId={task.id} index={index}>
+                            {(provided, snapshot) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className={snapshot.isDragging ? "opacity-50" : ""}
+                              >
+                                <TaskComponent
+                                  task={task}
+                                  onToggleComplete={handleToggleComplete}
+                                  onDelete={handleDelete}
+                                  onEdit={handleEdit}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                        {getListTasks(list.id).length === 0 && (
+                          <p className="text-center text-gray-400">No tasks in this list yet.</p>
+                        )}
+                      </div>
+                    )}
+                  </Droppable>
+                </>
               )}
             </div>
           ))}
