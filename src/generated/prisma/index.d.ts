@@ -1513,10 +1513,12 @@ export namespace Prisma {
    */
 
   export type TaskCountOutputType = {
+    subtasks: number
     tags: number
   }
 
   export type TaskCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    subtasks?: boolean | TaskCountOutputTypeCountSubtasksArgs
     tags?: boolean | TaskCountOutputTypeCountTagsArgs
   }
 
@@ -1529,6 +1531,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the TaskCountOutputType
      */
     select?: TaskCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TaskCountOutputType without action
+   */
+  export type TaskCountOutputTypeCountSubtasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TaskWhereInput
   }
 
   /**
@@ -7162,6 +7171,7 @@ export namespace Prisma {
     updatedAt: Date | null
     userId: string | null
     listId: string | null
+    parentId: string | null
   }
 
   export type TaskMaxAggregateOutputType = {
@@ -7175,6 +7185,7 @@ export namespace Prisma {
     updatedAt: Date | null
     userId: string | null
     listId: string | null
+    parentId: string | null
   }
 
   export type TaskCountAggregateOutputType = {
@@ -7188,6 +7199,7 @@ export namespace Prisma {
     updatedAt: number
     userId: number
     listId: number
+    parentId: number
     _all: number
   }
 
@@ -7203,6 +7215,7 @@ export namespace Prisma {
     updatedAt?: true
     userId?: true
     listId?: true
+    parentId?: true
   }
 
   export type TaskMaxAggregateInputType = {
@@ -7216,6 +7229,7 @@ export namespace Prisma {
     updatedAt?: true
     userId?: true
     listId?: true
+    parentId?: true
   }
 
   export type TaskCountAggregateInputType = {
@@ -7229,6 +7243,7 @@ export namespace Prisma {
     updatedAt?: true
     userId?: true
     listId?: true
+    parentId?: true
     _all?: true
   }
 
@@ -7315,6 +7330,7 @@ export namespace Prisma {
     updatedAt: Date
     userId: string
     listId: string | null
+    parentId: string | null
     _count: TaskCountAggregateOutputType | null
     _min: TaskMinAggregateOutputType | null
     _max: TaskMaxAggregateOutputType | null
@@ -7345,8 +7361,11 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     listId?: boolean
+    parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
+    subtasks?: boolean | Task$subtasksArgs<ExtArgs>
     tags?: boolean | Task$tagsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
@@ -7362,8 +7381,10 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     listId?: boolean
+    parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7377,8 +7398,10 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     listId?: boolean
+    parentId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectScalar = {
@@ -7392,22 +7415,27 @@ export namespace Prisma {
     updatedAt?: boolean
     userId?: boolean
     listId?: boolean
+    parentId?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "severity" | "dueDate" | "completed" | "createdAt" | "updatedAt" | "userId" | "listId", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "severity" | "dueDate" | "completed" | "createdAt" | "updatedAt" | "userId" | "listId" | "parentId", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
+    subtasks?: boolean | Task$subtasksArgs<ExtArgs>
     tags?: boolean | Task$tagsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
   }
   export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
+    parent?: boolean | Task$parentArgs<ExtArgs>
   }
 
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7415,6 +7443,8 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       list: Prisma.$ListPayload<ExtArgs> | null
+      parent: Prisma.$TaskPayload<ExtArgs> | null
+      subtasks: Prisma.$TaskPayload<ExtArgs>[]
       tags: Prisma.$TagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -7428,6 +7458,7 @@ export namespace Prisma {
       updatedAt: Date
       userId: string
       listId: string | null
+      parentId: string | null
     }, ExtArgs["result"]["task"]>
     composites: {}
   }
@@ -7824,6 +7855,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     list<T extends Task$listArgs<ExtArgs> = {}>(args?: Subset<T, Task$listArgs<ExtArgs>>): Prisma__ListClient<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    parent<T extends Task$parentArgs<ExtArgs> = {}>(args?: Subset<T, Task$parentArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    subtasks<T extends Task$subtasksArgs<ExtArgs> = {}>(args?: Subset<T, Task$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tags<T extends Task$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Task$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7864,6 +7897,7 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
     readonly userId: FieldRef<"Task", 'String'>
     readonly listId: FieldRef<"Task", 'String'>
+    readonly parentId: FieldRef<"Task", 'String'>
   }
     
 
@@ -8276,6 +8310,49 @@ export namespace Prisma {
      */
     include?: ListInclude<ExtArgs> | null
     where?: ListWhereInput
+  }
+
+  /**
+   * Task.parent
+   */
+  export type Task$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    where?: TaskWhereInput
+  }
+
+  /**
+   * Task.subtasks
+   */
+  export type Task$subtasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Task
+     */
+    select?: TaskSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Task
+     */
+    omit?: TaskOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TaskInclude<ExtArgs> | null
+    where?: TaskWhereInput
+    orderBy?: TaskOrderByWithRelationInput | TaskOrderByWithRelationInput[]
+    cursor?: TaskWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TaskScalarFieldEnum | TaskScalarFieldEnum[]
   }
 
   /**
@@ -9513,7 +9590,8 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     userId: 'userId',
-    listId: 'listId'
+    listId: 'listId',
+    parentId: 'parentId'
   };
 
   export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
@@ -10022,8 +10100,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    parentId?: StringNullableFilter<"Task"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     list?: XOR<ListNullableScalarRelationFilter, ListWhereInput> | null
+    parent?: XOR<TaskNullableScalarRelationFilter, TaskWhereInput> | null
+    subtasks?: TaskListRelationFilter
     tags?: TagListRelationFilter
   }
 
@@ -10038,8 +10119,11 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     listId?: SortOrderInput | SortOrder
+    parentId?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     list?: ListOrderByWithRelationInput
+    parent?: TaskOrderByWithRelationInput
+    subtasks?: TaskOrderByRelationAggregateInput
     tags?: TagOrderByRelationAggregateInput
   }
 
@@ -10057,8 +10141,11 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    parentId?: StringNullableFilter<"Task"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     list?: XOR<ListNullableScalarRelationFilter, ListWhereInput> | null
+    parent?: XOR<TaskNullableScalarRelationFilter, TaskWhereInput> | null
+    subtasks?: TaskListRelationFilter
     tags?: TagListRelationFilter
   }, "id">
 
@@ -10073,6 +10160,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     listId?: SortOrderInput | SortOrder
+    parentId?: SortOrderInput | SortOrder
     _count?: TaskCountOrderByAggregateInput
     _max?: TaskMaxOrderByAggregateInput
     _min?: TaskMinOrderByAggregateInput
@@ -10092,6 +10180,7 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     userId?: StringWithAggregatesFilter<"Task"> | string
     listId?: StringNullableWithAggregatesFilter<"Task"> | string | null
+    parentId?: StringNullableWithAggregatesFilter<"Task"> | string | null
   }
 
   export type TagWhereInput = {
@@ -10553,6 +10642,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTasksInput
     list?: ListCreateNestedOneWithoutTasksInput
+    parent?: TaskCreateNestedOneWithoutSubtasksInput
+    subtasks?: TaskCreateNestedManyWithoutParentInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -10567,6 +10658,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     listId?: string | null
+    parentId?: string | null
+    subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
   }
 
@@ -10581,6 +10674,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTasksNestedInput
     list?: ListUpdateOneWithoutTasksNestedInput
+    parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    subtasks?: TaskUpdateManyWithoutParentNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -10595,6 +10690,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
   }
 
@@ -10609,6 +10706,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     listId?: string | null
+    parentId?: string | null
   }
 
   export type TaskUpdateManyMutationInput = {
@@ -10633,6 +10731,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagCreateInput = {
@@ -11143,6 +11242,11 @@ export namespace Prisma {
     isNot?: ListWhereInput | null
   }
 
+  export type TaskNullableScalarRelationFilter = {
+    is?: TaskWhereInput | null
+    isNot?: TaskWhereInput | null
+  }
+
   export type TaskCountOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
@@ -11154,6 +11258,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    parentId?: SortOrder
   }
 
   export type TaskMaxOrderByAggregateInput = {
@@ -11167,6 +11272,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    parentId?: SortOrder
   }
 
   export type TaskMinOrderByAggregateInput = {
@@ -11180,6 +11286,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    parentId?: SortOrder
   }
 
   export type TagCountOrderByAggregateInput = {
@@ -11543,10 +11650,30 @@ export namespace Prisma {
     connect?: ListWhereUniqueInput
   }
 
+  export type TaskCreateNestedOneWithoutSubtasksInput = {
+    create?: XOR<TaskCreateWithoutSubtasksInput, TaskUncheckedCreateWithoutSubtasksInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutSubtasksInput
+    connect?: TaskWhereUniqueInput
+  }
+
+  export type TaskCreateNestedManyWithoutParentInput = {
+    create?: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput> | TaskCreateWithoutParentInput[] | TaskUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutParentInput | TaskCreateOrConnectWithoutParentInput[]
+    createMany?: TaskCreateManyParentInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
   export type TagCreateNestedManyWithoutTasksInput = {
     create?: XOR<TagCreateWithoutTasksInput, TagUncheckedCreateWithoutTasksInput> | TagCreateWithoutTasksInput[] | TagUncheckedCreateWithoutTasksInput[]
     connectOrCreate?: TagCreateOrConnectWithoutTasksInput | TagCreateOrConnectWithoutTasksInput[]
     connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  }
+
+  export type TaskUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput> | TaskCreateWithoutParentInput[] | TaskUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutParentInput | TaskCreateOrConnectWithoutParentInput[]
+    createMany?: TaskCreateManyParentInputEnvelope
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
   export type TagUncheckedCreateNestedManyWithoutTasksInput = {
@@ -11573,6 +11700,30 @@ export namespace Prisma {
     update?: XOR<XOR<ListUpdateToOneWithWhereWithoutTasksInput, ListUpdateWithoutTasksInput>, ListUncheckedUpdateWithoutTasksInput>
   }
 
+  export type TaskUpdateOneWithoutSubtasksNestedInput = {
+    create?: XOR<TaskCreateWithoutSubtasksInput, TaskUncheckedCreateWithoutSubtasksInput>
+    connectOrCreate?: TaskCreateOrConnectWithoutSubtasksInput
+    upsert?: TaskUpsertWithoutSubtasksInput
+    disconnect?: TaskWhereInput | boolean
+    delete?: TaskWhereInput | boolean
+    connect?: TaskWhereUniqueInput
+    update?: XOR<XOR<TaskUpdateToOneWithWhereWithoutSubtasksInput, TaskUpdateWithoutSubtasksInput>, TaskUncheckedUpdateWithoutSubtasksInput>
+  }
+
+  export type TaskUpdateManyWithoutParentNestedInput = {
+    create?: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput> | TaskCreateWithoutParentInput[] | TaskUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutParentInput | TaskCreateOrConnectWithoutParentInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutParentInput | TaskUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: TaskCreateManyParentInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutParentInput | TaskUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutParentInput | TaskUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
   export type TagUpdateManyWithoutTasksNestedInput = {
     create?: XOR<TagCreateWithoutTasksInput, TagUncheckedCreateWithoutTasksInput> | TagCreateWithoutTasksInput[] | TagUncheckedCreateWithoutTasksInput[]
     connectOrCreate?: TagCreateOrConnectWithoutTasksInput | TagCreateOrConnectWithoutTasksInput[]
@@ -11584,6 +11735,20 @@ export namespace Prisma {
     update?: TagUpdateWithWhereUniqueWithoutTasksInput | TagUpdateWithWhereUniqueWithoutTasksInput[]
     updateMany?: TagUpdateManyWithWhereWithoutTasksInput | TagUpdateManyWithWhereWithoutTasksInput[]
     deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  }
+
+  export type TaskUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput> | TaskCreateWithoutParentInput[] | TaskUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: TaskCreateOrConnectWithoutParentInput | TaskCreateOrConnectWithoutParentInput[]
+    upsert?: TaskUpsertWithWhereUniqueWithoutParentInput | TaskUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: TaskCreateManyParentInputEnvelope
+    set?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    disconnect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    delete?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+    update?: TaskUpdateWithWhereUniqueWithoutParentInput | TaskUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: TaskUpdateManyWithWhereWithoutParentInput | TaskUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
   export type TagUncheckedUpdateManyWithoutTasksNestedInput = {
@@ -11948,6 +12113,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     list?: ListCreateNestedOneWithoutTasksInput
+    parent?: TaskCreateNestedOneWithoutSubtasksInput
+    subtasks?: TaskCreateNestedManyWithoutParentInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -11961,6 +12128,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     listId?: string | null
+    parentId?: string | null
+    subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
   }
 
@@ -12121,6 +12290,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Task"> | Date | string
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    parentId?: StringNullableFilter<"Task"> | string | null
   }
 
   export type TagUpsertWithWhereUniqueWithoutUserInput = {
@@ -12378,6 +12548,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTasksInput
+    parent?: TaskCreateNestedOneWithoutSubtasksInput
+    subtasks?: TaskCreateNestedManyWithoutParentInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -12391,6 +12563,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    parentId?: string | null
+    subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
   }
 
@@ -12533,6 +12707,81 @@ export namespace Prisma {
     create: XOR<ListCreateWithoutTasksInput, ListUncheckedCreateWithoutTasksInput>
   }
 
+  export type TaskCreateWithoutSubtasksInput = {
+    id?: string
+    title: string
+    description?: string | null
+    severity?: string
+    dueDate?: Date | string | null
+    completed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTasksInput
+    list?: ListCreateNestedOneWithoutTasksInput
+    parent?: TaskCreateNestedOneWithoutSubtasksInput
+    tags?: TagCreateNestedManyWithoutTasksInput
+  }
+
+  export type TaskUncheckedCreateWithoutSubtasksInput = {
+    id?: string
+    title: string
+    description?: string | null
+    severity?: string
+    dueDate?: Date | string | null
+    completed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    listId?: string | null
+    parentId?: string | null
+    tags?: TagUncheckedCreateNestedManyWithoutTasksInput
+  }
+
+  export type TaskCreateOrConnectWithoutSubtasksInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutSubtasksInput, TaskUncheckedCreateWithoutSubtasksInput>
+  }
+
+  export type TaskCreateWithoutParentInput = {
+    id?: string
+    title: string
+    description?: string | null
+    severity?: string
+    dueDate?: Date | string | null
+    completed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTasksInput
+    list?: ListCreateNestedOneWithoutTasksInput
+    subtasks?: TaskCreateNestedManyWithoutParentInput
+    tags?: TagCreateNestedManyWithoutTasksInput
+  }
+
+  export type TaskUncheckedCreateWithoutParentInput = {
+    id?: string
+    title: string
+    description?: string | null
+    severity?: string
+    dueDate?: Date | string | null
+    completed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    listId?: string | null
+    subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
+    tags?: TagUncheckedCreateNestedManyWithoutTasksInput
+  }
+
+  export type TaskCreateOrConnectWithoutParentInput = {
+    where: TaskWhereUniqueInput
+    create: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput>
+  }
+
+  export type TaskCreateManyParentInputEnvelope = {
+    data: TaskCreateManyParentInput | TaskCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TagCreateWithoutTasksInput = {
     id?: string
     name: string
@@ -12634,6 +12883,63 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type TaskUpsertWithoutSubtasksInput = {
+    update: XOR<TaskUpdateWithoutSubtasksInput, TaskUncheckedUpdateWithoutSubtasksInput>
+    create: XOR<TaskCreateWithoutSubtasksInput, TaskUncheckedCreateWithoutSubtasksInput>
+    where?: TaskWhereInput
+  }
+
+  export type TaskUpdateToOneWithWhereWithoutSubtasksInput = {
+    where?: TaskWhereInput
+    data: XOR<TaskUpdateWithoutSubtasksInput, TaskUncheckedUpdateWithoutSubtasksInput>
+  }
+
+  export type TaskUpdateWithoutSubtasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    list?: ListUpdateOneWithoutTasksNestedInput
+    parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    tags?: TagUpdateManyWithoutTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateWithoutSubtasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
+  }
+
+  export type TaskUpsertWithWhereUniqueWithoutParentInput = {
+    where: TaskWhereUniqueInput
+    update: XOR<TaskUpdateWithoutParentInput, TaskUncheckedUpdateWithoutParentInput>
+    create: XOR<TaskCreateWithoutParentInput, TaskUncheckedCreateWithoutParentInput>
+  }
+
+  export type TaskUpdateWithWhereUniqueWithoutParentInput = {
+    where: TaskWhereUniqueInput
+    data: XOR<TaskUpdateWithoutParentInput, TaskUncheckedUpdateWithoutParentInput>
+  }
+
+  export type TaskUpdateManyWithWhereWithoutParentInput = {
+    where: TaskScalarWhereInput
+    data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutParentInput>
+  }
+
   export type TagUpsertWithWhereUniqueWithoutTasksInput = {
     where: TagWhereUniqueInput
     update: XOR<TagUpdateWithoutTasksInput, TagUncheckedUpdateWithoutTasksInput>
@@ -12702,6 +13008,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTasksInput
     list?: ListCreateNestedOneWithoutTasksInput
+    parent?: TaskCreateNestedOneWithoutSubtasksInput
+    subtasks?: TaskCreateNestedManyWithoutParentInput
   }
 
   export type TaskUncheckedCreateWithoutTagsInput = {
@@ -12715,6 +13023,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     userId: string
     listId?: string | null
+    parentId?: string | null
+    subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type TaskCreateOrConnectWithoutTagsInput = {
@@ -12824,6 +13134,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     listId?: string | null
+    parentId?: string | null
   }
 
   export type TagCreateManyUserInput = {
@@ -12933,6 +13244,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneWithoutTasksNestedInput
+    parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    subtasks?: TaskUpdateManyWithoutParentNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -12946,6 +13259,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
   }
 
@@ -12959,6 +13274,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagUpdateWithoutUserInput = {
@@ -12997,6 +13313,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    parentId?: string | null
   }
 
   export type TaskUpdateWithoutListInput = {
@@ -13009,6 +13326,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    subtasks?: TaskUpdateManyWithoutParentNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -13022,6 +13341,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
   }
 
@@ -13035,6 +13356,63 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TaskCreateManyParentInput = {
+    id?: string
+    title: string
+    description?: string | null
+    severity?: string
+    dueDate?: Date | string | null
+    completed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    listId?: string | null
+  }
+
+  export type TaskUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    list?: ListUpdateOneWithoutTasksNestedInput
+    subtasks?: TaskUpdateManyWithoutParentNestedInput
+    tags?: TagUpdateManyWithoutTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    listId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
+    tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
+  }
+
+  export type TaskUncheckedUpdateManyWithoutParentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    listId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagUpdateWithoutTasksInput = {
@@ -13075,6 +13453,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTasksNestedInput
     list?: ListUpdateOneWithoutTasksNestedInput
+    parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    subtasks?: TaskUpdateManyWithoutParentNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutTagsInput = {
@@ -13088,6 +13468,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
+    subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type TaskUncheckedUpdateManyWithoutTagsInput = {
@@ -13101,6 +13483,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

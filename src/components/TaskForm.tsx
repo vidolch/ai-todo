@@ -20,11 +20,12 @@ import {
 
 interface TaskFormProps {
   task?: Task | null;
+  parentId?: string | null;
   onSubmit: (taskData: Partial<Task>) => void;
   onCancel: () => void;
 }
 
-export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
+export function TaskForm({ task, parentId, onSubmit, onCancel }: TaskFormProps) {
   const [title, setTitle] = useState(task?.title || "");
   const [description, setDescription] = useState(task?.description || "");
   const [severity, setSeverity] = useState<Task["severity"]>(task?.severity || "normal");
@@ -43,6 +44,7 @@ export function TaskForm({ task, onSubmit, onCancel }: TaskFormProps) {
       description,
       severity,
       dueDate: dueDate || null,
+      parentId: parentId || null,
     });
 
     setIsSubmitting(false);

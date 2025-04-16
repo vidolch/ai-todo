@@ -15,6 +15,8 @@ export async function GET() {
       },
       include: {
         tags: true,
+        parent: true,
+        subtasks: true,
       },
       orderBy: {
         createdAt: "desc",
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, description, dueDate, listId, tags, severity } = body;
+    const { title, description, dueDate, listId, tags, severity, parentId } = body;
 
     const task = await prisma.task.create({
       data: {
@@ -47,12 +49,15 @@ export async function POST(request: Request) {
         completed: false,
         userId: session.user.id,
         listId,
+        parentId,
         tags: {
           connect: tags?.map((tagId: string) => ({ id: tagId })),
         },
       },
       include: {
         tags: true,
+        parent: true,
+        subtasks: true,
       },
     });
 

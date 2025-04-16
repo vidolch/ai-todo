@@ -93,12 +93,16 @@ model Task {
   updatedAt   DateTime  @updatedAt
   userId      String
   listId      String?
+  parentId    String?
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   list        List?     @relation(fields: [listId], references: [id], onDelete: SetNull)
+  parent      Task?     @relation("TaskSubtask", fields: [parentId], references: [id], onDelete: Cascade)
+  subtasks    Task[]    @relation("TaskSubtask")
   tags        Tag[]
 
   @@index([userId])
   @@index([listId])
+  @@index([parentId])
 }
 
 model Tag {

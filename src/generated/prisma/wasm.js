@@ -179,7 +179,8 @@ exports.Prisma.TaskScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   userId: 'userId',
-  listId: 'listId'
+  listId: 'listId',
+  parentId: 'parentId'
 };
 
 exports.Prisma.TagScalarFieldEnum = {

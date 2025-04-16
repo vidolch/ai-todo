@@ -119,15 +119,29 @@ export function TaskList() {
           dueDate: task.dueDate,
           completed: !task.completed,
           listId: task.listId,
+          parentId: task.parentId,
           tags: task.tags?.map(tag => tag.id),
         }),
       });
 
       if (response.ok) {
+        const updatedTask = await response.json();
         setTasks((prevTasks) =>
-          prevTasks.map((t) =>
-            t.id === taskId ? { ...t, completed: !t.completed } : t
-          )
+          prevTasks.map((t) => {
+            if (t.id === updatedTask.id) {
+              return updatedTask;
+            }
+            // If this task has the updated task as a subtask, update it
+            if (t.subtasks?.some(st => st.id === updatedTask.id)) {
+              return {
+                ...t,
+                subtasks: t.subtasks.map(st => 
+                  st.id === updatedTask.id ? updatedTask : st
+                )
+              };
+            }
+            return t;
+          })
         );
       }
     } catch (error) {
@@ -150,7 +164,10 @@ export function TaskList() {
   };
 
   const handleEdit = (task: Task) => {
-    setEditingTask(task);
+    setEditingTask({
+      ...task,
+      parentId: task.parentId || null
+    });
     setShowForm(true);
   };
 
@@ -162,13 +179,30 @@ export function TaskList() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(taskData),
+          body: JSON.stringify({
+            ...taskData,
+            parentId: editingTask.parentId,
+          }),
         });
 
         if (response.ok) {
           const updatedTask = await response.json();
           setTasks((prevTasks) =>
-            prevTasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
+            prevTasks.map((t) => {
+              if (t.id === updatedTask.id) {
+                return updatedTask;
+              }
+              // If this task has the updated task as a subtask, update it
+              if (t.subtasks?.some(st => st.id === updatedTask.id)) {
+                return {
+                  ...t,
+                  subtasks: t.subtasks.map(st => 
+                    st.id === updatedTask.id ? updatedTask : st
+                  )
+                };
+              }
+              return t;
+            })
           );
         }
       } else {
@@ -193,9 +227,38 @@ export function TaskList() {
     }
   };
 
+  const handleAddSubtask = async (parentId: string, title: string) => {
+    try {
+      const response = await fetch("/api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          severity: "normal",
+          parentId,
+        }),
+      });
+
+      if (response.ok) {
+        const newSubtask = await response.json();
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === parentId
+              ? { ...task, subtasks: [...(task.subtasks || []), newSubtask] }
+              : task
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error creating subtask:", error);
+    }
+  };
+
   // Filter and sort tasks
   const todoTasks = tasks
-    .filter((task) => !task.completed && !task.listId && (!editingTask || task.id !== editingTask.id))
+    .filter((task) => !task.completed && !task.listId && !task.parentId && (!editingTask || task.id !== editingTask.id))
     .sort((a, b) => {
       if (a.dueDate && b.dueDate) {
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
@@ -207,7 +270,7 @@ export function TaskList() {
 
   const getListTasks = (listId: string) => {
     return tasks
-      .filter((task) => !task.completed && task.listId === listId && (!editingTask || task.id !== editingTask.id))
+      .filter((task) => !task.completed && task.listId === listId && !task.parentId && (!editingTask || task.id !== editingTask.id))
       .sort((a, b) => {
         if (a.dueDate && b.dueDate) {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
@@ -219,7 +282,7 @@ export function TaskList() {
   };
 
   const doneTasks = tasks
-    .filter((task) => task.completed && (!editingTask || task.id !== editingTask.id))
+    .filter((task) => task.completed && !task.parentId && (!editingTask || task.id !== editingTask.id))
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
   const toggleListCollapse = (listId: string) => {
@@ -345,6 +408,7 @@ export function TaskList() {
                             onToggleComplete={handleToggleComplete}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
+                            onAddSubtask={handleAddSubtask}
                           />
                         </div>
                       )}
@@ -420,6 +484,7 @@ export function TaskList() {
                                   onToggleComplete={handleToggleComplete}
                                   onDelete={handleDelete}
                                   onEdit={handleEdit}
+                                  onAddSubtask={handleAddSubtask}
                                 />
                               </div>
                             )}
@@ -460,6 +525,7 @@ export function TaskList() {
                             onToggleComplete={handleToggleComplete}
                             onDelete={handleDelete}
                             onEdit={handleEdit}
+                            onAddSubtask={handleAddSubtask}
                           />
                         </div>
                       )}

@@ -14,7 +14,18 @@ export async function PATCH(
 
     const { taskId } = await params;
     const body = await request.json();
-    const { title, description, dueDate, listId, tags, severity, completed } = body;
+    const { title, description, dueDate, listId, tags, severity, completed, parentId } = body;
+
+    // First, get the current task to preserve its parentId if not provided in the update
+    const currentTask = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+        userId: session.user.id,
+      },
+      select: {
+        parentId: true,
+      },
+    });
 
     const task = await prisma.task.update({
       where: {
@@ -28,12 +39,15 @@ export async function PATCH(
         dueDate: dueDate ? new Date(dueDate) : null,
         completed,
         listId,
+        parentId: parentId !== undefined ? parentId : currentTask?.parentId,
         tags: {
           set: tags?.map((tagId: string) => ({ id: tagId })),
         },
       },
       include: {
         tags: true,
+        parent: true,
+        subtasks: true,
       },
     });
 

@@ -9,6 +9,9 @@ export interface Task {
   updatedAt: Date;
   userId: string;
   listId?: string | null;
+  parentId?: string | null;
+  parent?: Task | null;
+  subtasks?: Task[];
   tags?: {
     id: string;
     name: string;
