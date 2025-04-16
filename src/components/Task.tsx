@@ -3,11 +3,12 @@
 import { Task as TaskType } from "@/types/task";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
-import { Pencil, Trash2, List } from "lucide-react";
+import { Pencil, Trash2, List, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Subtasks } from "./Subtasks";
 import { Progress } from "./ui/progress";
+import { format } from "date-fns";
 
 interface TaskProps {
   task: TaskType;
@@ -46,6 +47,12 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
             </h3>
             {task.description && (
               <p className="text-sm text-gray-400">{task.description}</p>
+            )}
+            {task.dueDate && (
+              <div className="flex items-center gap-1 text-sm text-gray-400">
+                <Calendar className="h-3 w-3" />
+                <span>{format(new Date(task.dueDate), "MMM d, yyyy")}</span>
+              </div>
             )}
           </div>
         </div>
