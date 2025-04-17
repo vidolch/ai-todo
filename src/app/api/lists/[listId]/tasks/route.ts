@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function PATCH(
-  req: Request,
+  request: Request,
   { params }: { params: { listId: string } }
 ) {
   try {
@@ -13,7 +13,7 @@ export async function PATCH(
     }
 
     const { listId } = params;
-    const { targetListId } = await req.json();
+    const { targetListId } = await request.json();
 
     // Verify source list access
     const sourceUserList = await prisma.userList.findUnique({
@@ -62,7 +62,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: Request,
+  request: Request,
   { params }: { params: { listId: string } }
 ) {
   try {

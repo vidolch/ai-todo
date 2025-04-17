@@ -49,10 +49,38 @@ export async function POST(req: Request) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, color } = await req.json();
+    const { name, description, color, invitedUsers } = await req.json();
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
+    }
+
+    // Create users array for the list, always including the current user as OWNER
+    const userConnections = [
+      {
+        userId: session.user.id,
+        role: "OWNER"
+      }
+    ];
+
+    // Add invited users if any
+    if (invitedUsers && Array.isArray(invitedUsers) && invitedUsers.length > 0) {
+      // Validate each invited user exists before adding
+      for (const invited of invitedUsers) {
+        const user = await prisma.user.findUnique({
+          where: { id: invited.userId }
+        });
+        
+        if (user) {
+          // Don't add the current user twice (they're already added as OWNER)
+          if (invited.userId !== session.user.id) {
+            userConnections.push({
+              userId: invited.userId,
+              role: invited.role
+            });
+          }
+        }
+      }
     }
 
     const list = await prisma.list.create({
@@ -61,19 +89,21 @@ export async function POST(req: Request) {
         description,
         color,
         users: {
-          create: {
-            userId: session.user.id,
-            role: "OWNER"
-          }
+          create: userConnections
         }
       },
       include: {
         users: {
-          where: {
-            userId: session.user.id
-          },
           select: {
-            role: true
+            userId: true,
+            role: true,
+            user: {
+              select: {
+                name: true,
+                email: true,
+                image: true
+              }
+            }
           }
         }
       }

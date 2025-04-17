@@ -40,7 +40,7 @@ export function Lists() {
     fetchLists();
   }, []);
 
-  const handleFormSubmit = async (formData: Partial<List>) => {
+  const handleFormSubmit = async (formData: Partial<List> & { invitedUsers?: { userId: string, role: "OWNER" | "CONTRIBUTOR" }[] }) => {
     try {
       const url = editingList ? `/api/lists/${editingList.id}` : "/api/lists";
       const method = editingList ? "PATCH" : "POST";
@@ -124,6 +124,7 @@ export function Lists() {
             setShowForm(false);
             setEditingList(null);
           }}
+          isEditing={!!editingList}
         />
       )}
 
