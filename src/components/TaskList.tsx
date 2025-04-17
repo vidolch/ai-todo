@@ -128,6 +128,8 @@ export function TaskList() {
         setTasks((prevTasks) => [newTask, ...prevTasks]);
         if (listId) {
           setQuickTaskTitles(prev => ({ ...prev, [listId]: "" }));
+          // Refresh the list tasks after adding a new task to a list
+          fetchListTasks(listId);
         } else {
           setQuickTaskTitle("");
         }
@@ -240,12 +242,32 @@ export function TaskList() {
 
   const handleDelete = async (taskId: string) => {
     try {
+      // Find the task in the main tasks list or in any of the list tasks
+      const task = tasks.find((t) => t.id === taskId);
+      let listId = task?.listId;
+      
+      // If not found in main tasks, check list tasks
+      if (!task || !listId) {
+        for (const [id, tasksInList] of Object.entries(listTasks)) {
+          const foundTask = tasksInList.find(t => t.id === taskId);
+          if (foundTask) {
+            listId = id;
+            break;
+          }
+        }
+      }
+      
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         setTasks((prevTasks) => prevTasks.filter((t) => t.id !== taskId));
+        
+        // If the deleted task belonged to a list, refresh that list's tasks
+        if (listId) {
+          fetchListTasks(listId);
+        }
       }
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -293,6 +315,16 @@ export function TaskList() {
               return t;
             })
           );
+          
+          // Refresh list tasks if the edited task belongs to a list
+          if (updatedTask.listId) {
+            fetchListTasks(updatedTask.listId);
+          }
+          
+          // Also check if the task was previously in a different list and refresh that list too
+          if (editingTask.listId && editingTask.listId !== updatedTask.listId) {
+            fetchListTasks(editingTask.listId);
+          }
         }
       } else {
         const response = await fetch("/api/tasks", {
@@ -306,6 +338,11 @@ export function TaskList() {
         if (response.ok) {
           const newTask = await response.json();
           setTasks((prevTasks) => [newTask, ...prevTasks]);
+          
+          // Refresh list tasks if the new task belongs to a list
+          if (newTask.listId) {
+            fetchListTasks(newTask.listId);
+          }
         }
       }
 
@@ -318,6 +355,21 @@ export function TaskList() {
 
   const handleAddSubtask = async (parentId: string, title: string) => {
     try {
+      // Find parent task to determine if it belongs to a list
+      const parentTask = tasks.find(t => t.id === parentId);
+      let listId = parentTask?.listId;
+      
+      // If not found in main tasks, check list tasks
+      if (!parentTask || !listId) {
+        for (const [id, tasksInList] of Object.entries(listTasks)) {
+          const foundTask = tasksInList.find(t => t.id === parentId);
+          if (foundTask) {
+            listId = id;
+            break;
+          }
+        }
+      }
+      
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
@@ -339,6 +391,11 @@ export function TaskList() {
               : task
           )
         );
+        
+        // If the parent task belongs to a list, refresh that list's tasks
+        if (listId) {
+          fetchListTasks(listId);
+        }
       }
     } catch (error) {
       console.error("Error creating subtask:", error);
