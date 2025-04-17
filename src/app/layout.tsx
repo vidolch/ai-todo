@@ -47,7 +47,11 @@ export default async function RootLayout({
                       </Link>
                     </nav>
                   </div>
-                  <UserMenu email={session.user?.email || ''} />
+                  <UserMenu 
+                    email={session.user?.email || ''} 
+                    name={session.user?.name}
+                    image={session.user?.image}
+                  />
                 </div>
               </div>
             </header>
