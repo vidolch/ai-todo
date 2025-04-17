@@ -139,7 +139,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
 
     // Verify list access and ownership
     const userList = await prisma.userList.findUnique({
