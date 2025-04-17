@@ -1,6 +1,7 @@
 import { Task } from "@/types/task";
 import { DraggableTaskList } from "./DraggableTaskList";
 import { QuickAddTask } from "./QuickAddTask";
+import { useEffect, useState } from "react";
 
 interface TaskSectionProps {
   title: string;
@@ -33,6 +34,25 @@ export function TaskSection({
   emptyMessage,
   className = "",
 }: TaskSectionProps) {
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Fetch current user ID
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/user');
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUserId(userData.id);
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
   return (
     <div className={className}>
       <h3 className="text-xl font-semibold text-white mb-4">{title}</h3>
@@ -51,6 +71,7 @@ export function TaskSection({
         onEdit={onEdit}
         onAddSubtask={onAddSubtask}
         emptyMessage={emptyMessage}
+        currentUserId={currentUserId}
       />
     </div>
   );

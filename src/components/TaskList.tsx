@@ -13,6 +13,10 @@ interface List {
   name: string;
   description?: string | null;
   color?: string | null;
+  users?: {
+    userId: string;
+    role: string;
+  }[];
   _count: {
     tasks: number;
   };
@@ -152,21 +156,29 @@ export function TaskList() {
       
       if (!taskToUpdate) return;
 
+      // Check if this is the current user's task
+      const isCurrentUserTask = taskToUpdate.userId === (await getCurrentUserId());
+      
+      // For tasks not owned by current user, only update the completion status
+      const updateData = isCurrentUserTask ? {
+        title: taskToUpdate.title,
+        description: taskToUpdate.description,
+        severity: taskToUpdate.severity,
+        dueDate: taskToUpdate.dueDate,
+        completed: !taskToUpdate.completed,
+        listId: taskToUpdate.listId,
+        parentId: taskToUpdate.parentId,
+        tags: taskToUpdate.tags?.map(tag => tag.id),
+      } : {
+        completed: !taskToUpdate.completed
+      };
+
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: taskToUpdate.title,
-          description: taskToUpdate.description,
-          severity: taskToUpdate.severity,
-          dueDate: taskToUpdate.dueDate,
-          completed: !taskToUpdate.completed,
-          listId: taskToUpdate.listId,
-          parentId: taskToUpdate.parentId,
-          tags: taskToUpdate.tags?.map(tag => tag.id),
-        }),
+        body: JSON.stringify(updateData),
       });
 
       if (response.ok) {
@@ -195,10 +207,32 @@ export function TaskList() {
         if (listId) {
           fetchListTasks(listId);
         }
+        
+        // If this task has a parent task, and that parent is in a list, refresh that list too
+        if (updatedTask.parentId) {
+          const parentTask = tasks.find(t => t.id === updatedTask.parentId);
+          if (parentTask && parentTask.listId) {
+            fetchListTasks(parentTask.listId);
+          }
+        }
       }
     } catch (error) {
       console.error("Error toggling task completion:", error);
     }
+  };
+
+  // Helper function to get current user ID
+  const getCurrentUserId = async () => {
+    try {
+      const response = await fetch('/api/user');
+      if (response.ok) {
+        const userData = await response.json();
+        return userData.id;
+      }
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+    }
+    return null;
   };
 
   const handleDelete = async (taskId: string) => {
@@ -336,8 +370,17 @@ export function TaskList() {
       });
   };
 
+  const getListCompletedTasks = (listId: string) => {
+    // Get completed tasks from the listTasks state
+    const tasksForList = listTasks[listId] || [];
+    
+    return tasksForList
+      .filter((task) => task.completed && !task.parentId && (!editingTask || task.id !== editingTask.id))
+      .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+  };
+
   const doneTasks = tasks
-    .filter((task) => task.completed && !task.parentId && (!editingTask || task.id !== editingTask.id))
+    .filter((task) => task.completed && !task.listId && !task.parentId && (!editingTask || task.id !== editingTask.id))
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
 
   const toggleListCollapse = (listId: string) => {
@@ -362,10 +405,72 @@ export function TaskList() {
     const task = tasks.find(t => t.id === draggableId);
     if (!task) return;
 
-    // Determine the new listId
+    // Check if this is a task owned by the current user
+    const currentUserResponse = await fetch('/api/user');
+    if (!currentUserResponse.ok) return;
+    
+    const currentUser = await currentUserResponse.json();
+    if (task.userId !== currentUser.id) {
+      // Only allow changing completion status for tasks not owned by current user
+      if (
+        (source.droppableId === DONE_LIST_ID && destination.droppableId !== DONE_LIST_ID) ||
+        (source.droppableId !== DONE_LIST_ID && destination.droppableId === DONE_LIST_ID) ||
+        destination.droppableId.includes("_completed")
+      ) {
+        // Allow toggling completion status
+        try {
+          const response = await fetch(`/api/tasks/${task.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              completed: destination.droppableId === DONE_LIST_ID || destination.droppableId.includes("_completed"),
+            }),
+          });
+
+          if (response.ok) {
+            const updatedTask = await response.json();
+            setTasks(prevTasks =>
+              prevTasks.map(t => t.id === updatedTask.id ? updatedTask : t)
+            );
+            
+            // If this was a list task, refresh the list's tasks
+            if (task.listId) {
+              fetchListTasks(task.listId);
+            }
+            
+            // If destination was a list's completed section, also refresh that list
+            if (destination.droppableId.includes("_completed")) {
+              const listId = destination.droppableId.split("_")[0];
+              fetchListTasks(listId);
+            }
+          }
+        } catch (error) {
+          console.error("Error updating task completion:", error);
+        }
+      }
+      return;
+    }
+
+    // Proceed with full update for user's own tasks
+    // Extract listId from droppableId (could be a list ID or list_completed)
     let newListId: string | null = null;
+    let shouldComplete = false;
+    
     if (destination.droppableId !== TODO_LIST_ID && destination.droppableId !== DONE_LIST_ID) {
-      newListId = destination.droppableId;
+      if (destination.droppableId.includes("_completed")) {
+        // If dropped in a list's completed section
+        newListId = destination.droppableId.split("_")[0];
+        shouldComplete = true;
+      } else {
+        // If dropped in a regular list
+        newListId = destination.droppableId;
+        shouldComplete = false;
+      }
+    } else {
+      // If dropped in general todo or done
+      shouldComplete = destination.droppableId === DONE_LIST_ID;
     }
 
     // Update task with new list and completion status
@@ -378,7 +483,7 @@ export function TaskList() {
         body: JSON.stringify({
           ...task,
           listId: newListId,
-          completed: destination.droppableId === DONE_LIST_ID,
+          completed: shouldComplete,
         }),
       });
 
@@ -387,6 +492,14 @@ export function TaskList() {
         setTasks(prevTasks =>
           prevTasks.map(t => t.id === updatedTask.id ? updatedTask : t)
         );
+        
+        // Refresh source and destination lists if needed
+        if (task.listId) {
+          fetchListTasks(task.listId);
+        }
+        if (newListId) {
+          fetchListTasks(newListId);
+        }
       }
     } catch (error) {
       console.error("Error updating task:", error);
@@ -433,6 +546,7 @@ export function TaskList() {
               key={list.id}
               list={list}
               tasks={getListTasks(list.id)}
+              completedTasks={getListCompletedTasks(list.id)}
               isCollapsed={collapsedLists[list.id]}
               quickAddValue={quickTaskTitles[list.id] || ""}
               onToggleCollapse={(listId) => {

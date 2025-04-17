@@ -18,6 +18,7 @@ interface TaskProps {
   onDelete: (taskId: string) => void;
   onEdit: (task: TaskType) => void;
   onAddSubtask: (parentId: string, title: string) => void;
+  isCurrentUserTask?: boolean;
 }
 
 const severityColors = {
@@ -26,14 +27,16 @@ const severityColors = {
   critical: "bg-red-500/20 text-red-300",
 };
 
-export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }: TaskProps) {
+export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask, isCurrentUserTask }: TaskProps) {
   const subtasks = task.subtasks || [];
   const completedSubtasks = subtasks.filter((st) => st.completed).length;
   const progress = subtasks.length > 0 ? (completedSubtasks / subtasks.length) * 100 : 0;
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  // Fetch current user ID
+  // Fetch current user ID if isCurrentUserTask is not provided
   useEffect(() => {
+    if (isCurrentUserTask !== undefined) return;
+    
     const fetchCurrentUser = async () => {
       try {
         const response = await fetch('/api/user');
@@ -47,9 +50,12 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
     };
 
     fetchCurrentUser();
-  }, []);
+  }, [isCurrentUserTask]);
 
-  const isCurrentUser = task.user && currentUserId && task.user.id === currentUserId;
+  // If isCurrentUserTask is provided, use it. Otherwise, determine it from the fetched user ID
+  const canEditOrDelete = isCurrentUserTask !== undefined 
+    ? isCurrentUserTask 
+    : (task.user && currentUserId && task.user.id === currentUserId);
 
   return (
     <div className="p-4 rounded-lg border border-white/10 bg-white/5 space-y-3">
@@ -85,7 +91,7 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
                   </Avatar>
                   <span>
                     {task.user.name || task.user.email}
-                    {isCurrentUser && " (you)"}
+                    {canEditOrDelete && " (you)"}
                   </span>
                 </div>
               )}
@@ -102,22 +108,26 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
           {task.severity === "low" && (
             <Badge variant="secondary">Low</Badge>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-400 hover:text-white"
-            onClick={() => onEdit(task)}
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-gray-400 hover:text-white"
-            onClick={() => onDelete(task.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {canEditOrDelete && (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-400 hover:text-white"
+                onClick={() => onEdit(task)}
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-gray-400 hover:text-white"
+                onClick={() => onDelete(task.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
       </div>
       {subtasks.length > 0 && (
@@ -135,6 +145,7 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
         onDelete={onDelete}
         onEdit={onEdit}
         onAddSubtask={onAddSubtask}
+        isCurrentUserTask={!!canEditOrDelete}
       />
     </div>
   );
