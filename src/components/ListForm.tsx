@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { UserPlus, X, Check } from 'lucide-react';
+import { UserPlus, X, Check, Mail } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 
 interface User {
   id: string;
@@ -107,7 +107,8 @@ export function ListForm({ list, onSubmit, onCancel, isEditing = false }: ListFo
 
   // Search users with debounce
   const searchUsers = debounce(async (term: string) => {
-    if (!term.trim() || term.length < 2) {
+    // If empty or no @ symbol, clear results
+    if (!term.trim() || !term.includes('@')) {
       setSearchResults([]);
       setIsSearching(false);
       return;
@@ -136,6 +137,9 @@ export function ListForm({ list, onSubmit, onCancel, isEditing = false }: ListFo
     setSearchTerm(value);
     searchUsers(value);
   };
+
+  // Check if currently in email search mode
+  const isEmailSearchMode = searchTerm.includes('@');
 
   const addUser = (user: User) => {
     setInvitedUsers([
@@ -213,21 +217,27 @@ export function ListForm({ list, onSubmit, onCancel, isEditing = false }: ListFo
         <label className="block text-sm font-medium text-white">Manage Users</label>
         <div className="relative">
           <div className="flex items-center">
+            <Mail className="absolute left-3 h-4 w-4 text-gray-400" />
             <Input
               value={searchTerm}
               onChange={handleSearchChange}
-              placeholder="Search users by name or email"
-              className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 pr-10"
+              placeholder="Search by email address with @"
+              className={`bg-white/5 border-white/10 text-white placeholder:text-gray-500 pl-9 pr-10 ${
+                isEmailSearchMode ? 'border-blue-500' : ''
+              }`}
             />
             <UserPlus className="absolute right-3 h-5 w-5 text-gray-400" />
           </div>
           
+          <div className="mt-1 text-xs text-gray-400">Enter an email with @ to search for users</div>
+
+          
           {isSearching && (
-            <div className="mt-1 text-sm text-gray-400">Searching...</div>
+            <div className="mt-0 text-sm text-gray-400">Searching...</div>
           )}
           
           {searchResults.length > 0 && (
-            <div className="absolute z-10 mt-1 w-full bg-gray-800 border border-white/10 rounded-md shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-10 mt-0 w-full bg-gray-800 border border-white/10 rounded-md shadow-lg max-h-60 overflow-auto">
               <ul className="py-1">
                 {searchResults.map((user) => (
                   <li 

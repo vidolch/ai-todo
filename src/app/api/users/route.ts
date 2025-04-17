@@ -12,18 +12,20 @@ export async function GET(request: Request) {
     // Get query parameters
     const url = new URL(request.url);
     const search = url.searchParams.get("search") || "";
+    const hasAtSymbol = search.includes('@');
 
-    // Find users that match the search term, excluding the current user
+    // Only perform search if @ symbol is present (email search)
+    if (!hasAtSymbol) {
+      // Return empty array if no @ symbol
+      return NextResponse.json([]);
+    }
+
+    // Find users that match the email search term, excluding the current user
     const users = await prisma.user.findMany({
       where: {
         AND: [
           { id: { not: session.user.id } }, // Exclude current user
-          {
-            OR: [
-              { name: { contains: search, mode: "insensitive" } },
-              { email: { contains: search, mode: "insensitive" } },
-            ],
-          },
+          { email: { contains: search, mode: "insensitive" } }, // Only search by email
         ],
         // Only include active users
         isActive: true,
