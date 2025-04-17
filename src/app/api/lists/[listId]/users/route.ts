@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -52,9 +52,9 @@ export async function GET(
         role: string;
         user: {
           id: string;
-          name: string;
-          email: string;
-          image: string;
+          name: string | null;
+          email: string | null;
+          image: string | null;
         };
       }
     ) => ({
@@ -72,7 +72,7 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -80,7 +80,7 @@ export async function POST(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
     const { userId, role } = await req.json();
 
     if (!userId) {
@@ -128,7 +128,7 @@ export async function POST(
     await prisma.task.updateMany({
       where: {
         listId,
-        userId: null
+        userId: undefined
       },
       data: {
         userId: session.user.id,
@@ -148,7 +148,7 @@ export async function POST(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -156,7 +156,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
     const url = new URL(req.url);
     const userId = url.searchParams.get("userId");
 

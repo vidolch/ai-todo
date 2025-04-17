@@ -139,7 +139,6 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask, i
         onDelete={onDelete}
         onEdit={onEdit}
         onAddSubtask={onAddSubtask}
-        isCurrentUserTask={!!canEditOrDelete}
       />
     </div>
   );

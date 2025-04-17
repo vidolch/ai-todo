@@ -1,3 +1,4 @@
+import { CollaborationRole } from "@/generated/prisma";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -59,7 +60,12 @@ export async function POST(req: Request) {
     const userConnections = [
       {
         userId: session.user.id,
-        role: "OWNER"
+        role: CollaborationRole.OWNER,
+        user: {
+          connect: {
+            id: session.user.id
+          }
+        }
       }
     ];
 
@@ -76,7 +82,12 @@ export async function POST(req: Request) {
           if (invited.userId !== session.user.id) {
             userConnections.push({
               userId: invited.userId,
-              role: invited.role
+              role: invited.role,
+              user: {
+                connect: {
+                  id: invited.userId
+                }
+              }
             });
           }
         }

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -12,7 +12,7 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
 
     // First, verify the user has access to this list
     const userList = await prisma.userList.findUnique({
@@ -60,7 +60,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -68,7 +68,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
     const { targetListId } = await request.json();
 
     // Verify source list access
@@ -119,7 +119,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { listId: string } }
+  { params }: { params: Promise<{ listId: string }> }
 ) {
   try {
     const session = await auth();
@@ -127,7 +127,7 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
 
     // Verify list access
     const userList = await prisma.userList.findUnique({

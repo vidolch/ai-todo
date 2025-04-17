@@ -73,6 +73,7 @@ export function Subtasks({ task, onToggleComplete, onDelete, onEdit, onAddSubtas
               onToggleComplete={onToggleComplete}
               onDelete={onDelete}
               onEdit={onEdit}
+              onAddSubtask={onAddSubtask}
             />
           ))}
         </div>
