@@ -13,6 +13,7 @@ interface List {
   color?: string | null;
   tasks: { id: string }[];
   _count: { tasks: number };
+  users: { role: "OWNER" | "CONTRIBUTOR" }[];
 }
 
 export function Lists() {
@@ -156,27 +157,36 @@ export function Lists() {
                   {list.description && (
                     <p className="text-gray-400 text-sm">{list.description}</p>
                   )}
+                  <div className="mt-1">
+                    <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-gray-300">
+                      {list.users[0]?.role}
+                    </span>
+                  </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setEditingList(list);
-                      setShowForm(true);
-                    }}
-                    className="text-gray-400 hover:text-white"
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setDeletingList(list)}
-                    className="text-gray-400 hover:text-white hover:bg-red-500/10"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {list.users[0]?.role === "OWNER" && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setEditingList(list);
+                          setShowForm(true);
+                        }}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setDeletingList(list)}
+                        className="text-gray-400 hover:text-white hover:bg-red-500/10"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="text-sm text-gray-400">

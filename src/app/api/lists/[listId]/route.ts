@@ -19,16 +19,23 @@ export async function PATCH(
       return new NextResponse("Name is required", { status: 400 });
     }
 
-    // Verify list ownership
-    const list = await prisma.list.findUnique({
+    // Verify list access and ownership
+    const userList = await prisma.userList.findUnique({
       where: {
-        id: listId,
-        userId: session.user.id,
+        userId_listId: {
+          userId: session.user.id,
+          listId: listId,
+        },
       },
     });
 
-    if (!list) {
+    if (!userList) {
       return new NextResponse("Not found", { status: 404 });
+    }
+
+    // Only owner can update the list
+    if (userList.role !== "OWNER") {
+      return new NextResponse("Permission denied", { status: 403 });
     }
 
     const updatedList = await prisma.list.update({
@@ -61,16 +68,23 @@ export async function DELETE(
 
     const { listId } = params;
 
-    // Verify list ownership
-    const list = await prisma.list.findUnique({
+    // Verify list access and ownership
+    const userList = await prisma.userList.findUnique({
       where: {
-        id: listId,
-        userId: session.user.id,
+        userId_listId: {
+          userId: session.user.id,
+          listId: listId,
+        },
       },
     });
 
-    if (!list) {
+    if (!userList) {
       return new NextResponse("Not found", { status: 404 });
+    }
+
+    // Only owner can delete the list
+    if (userList.role !== "OWNER") {
+      return new NextResponse("Permission denied", { status: 403 });
     }
 
     // Delete the list

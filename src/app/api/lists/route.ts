@@ -11,12 +11,24 @@ export async function GET() {
 
     const lists = await prisma.list.findMany({
       where: {
-        userId: session.user.id,
+        users: {
+          some: {
+            userId: session.user.id
+          }
+        }
       },
       include: {
         _count: {
           select: { tasks: true },
         },
+        users: {
+          where: {
+            userId: session.user.id
+          },
+          select: {
+            role: true
+          }
+        }
       },
       orderBy: {
         createdAt: "desc",
@@ -48,8 +60,23 @@ export async function POST(req: Request) {
         name,
         description,
         color,
-        userId: session.user.id,
+        users: {
+          create: {
+            userId: session.user.id,
+            role: "OWNER"
+          }
+        }
       },
+      include: {
+        users: {
+          where: {
+            userId: session.user.id
+          },
+          select: {
+            role: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(list);

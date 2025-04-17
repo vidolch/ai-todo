@@ -15,27 +15,31 @@ export async function PATCH(
     const { listId } = params;
     const { targetListId } = await req.json();
 
-    // Verify source list ownership
-    const sourceList = await prisma.list.findUnique({
+    // Verify source list access
+    const sourceUserList = await prisma.userList.findUnique({
       where: {
-        id: listId,
-        userId: session.user.id,
+        userId_listId: {
+          userId: session.user.id,
+          listId: listId,
+        },
       },
     });
 
-    if (!sourceList) {
+    if (!sourceUserList) {
       return new NextResponse("Source list not found", { status: 404 });
     }
 
-    // Verify target list ownership
-    const targetList = await prisma.list.findUnique({
+    // Verify target list access
+    const targetUserList = await prisma.userList.findUnique({
       where: {
-        id: targetListId,
-        userId: session.user.id,
+        userId_listId: {
+          userId: session.user.id,
+          listId: targetListId,
+        },
       },
     });
 
-    if (!targetList) {
+    if (!targetUserList) {
       return new NextResponse("Target list not found", { status: 404 });
     }
 
@@ -69,15 +73,17 @@ export async function DELETE(
 
     const { listId } = params;
 
-    // Verify list ownership
-    const list = await prisma.list.findUnique({
+    // Verify list access
+    const userList = await prisma.userList.findUnique({
       where: {
-        id: listId,
-        userId: session.user.id,
+        userId_listId: {
+          userId: session.user.id,
+          listId: listId,
+        },
       },
     });
 
-    if (!list) {
+    if (!userList) {
       return new NextResponse("List not found", { status: 404 });
     }
 

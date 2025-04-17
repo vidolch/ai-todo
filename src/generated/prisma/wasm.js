@@ -121,14 +121,14 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  emailVerified: 'emailVerified',
   image: 'image',
-  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  lastLogin: 'lastLogin',
+  emailVerified: 'emailVerified',
   isActive: 'isActive',
-  preferences: 'preferences'
+  lastLogin: 'lastLogin',
+  preferences: 'preferences',
+  role: 'role'
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
@@ -162,34 +162,42 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
 exports.Prisma.ListScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  description: 'description',
-  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId'
+  color: 'color',
+  description: 'description'
+};
+
+exports.Prisma.UserListScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  listId: 'listId'
 };
 
 exports.Prisma.TaskScalarFieldEnum = {
   id: 'id',
   title: 'title',
   description: 'description',
-  severity: 'severity',
-  dueDate: 'dueDate',
   completed: 'completed',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  dueDate: 'dueDate',
   userId: 'userId',
   listId: 'listId',
+  severity: 'severity',
   parentId: 'parentId'
 };
 
 exports.Prisma.TagScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  color: 'color',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  userId: 'userId'
+  userId: 'userId',
+  color: 'color'
 };
 
 exports.Prisma.SortOrder = {
@@ -217,7 +225,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.CollaborationRole = exports.$Enums.CollaborationRole = {
+  OWNER: 'OWNER',
+  CONTRIBUTOR: 'CONTRIBUTOR'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
@@ -225,6 +236,7 @@ exports.Prisma.ModelName = {
   Session: 'Session',
   VerificationToken: 'VerificationToken',
   List: 'List',
+  UserList: 'UserList',
   Task: 'Task',
   Tag: 'Tag'
 };

@@ -39,6 +39,11 @@ export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTok
  */
 export type List = $Result.DefaultSelection<Prisma.$ListPayload>
 /**
+ * Model UserList
+ * 
+ */
+export type UserList = $Result.DefaultSelection<Prisma.$UserListPayload>
+/**
  * Model Task
  * 
  */
@@ -48,6 +53,23 @@ export type Task = $Result.DefaultSelection<Prisma.$TaskPayload>
  * 
  */
 export type Tag = $Result.DefaultSelection<Prisma.$TagPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const CollaborationRole: {
+  OWNER: 'OWNER',
+  CONTRIBUTOR: 'CONTRIBUTOR'
+};
+
+export type CollaborationRole = (typeof CollaborationRole)[keyof typeof CollaborationRole]
+
+}
+
+export type CollaborationRole = $Enums.CollaborationRole
+
+export const CollaborationRole: typeof $Enums.CollaborationRole
 
 /**
  * ##  Prisma Client ʲˢ
@@ -223,6 +245,16 @@ export class PrismaClient<
     * ```
     */
   get list(): Prisma.ListDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userList`: Exposes CRUD operations for the **UserList** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserLists
+    * const userLists = await prisma.userList.findMany()
+    * ```
+    */
+  get userList(): Prisma.UserListDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.task`: Exposes CRUD operations for the **Task** model.
@@ -688,6 +720,7 @@ export namespace Prisma {
     Session: 'Session',
     VerificationToken: 'VerificationToken',
     List: 'List',
+    UserList: 'UserList',
     Task: 'Task',
     Tag: 'Tag'
   };
@@ -708,7 +741,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "session" | "verificationToken" | "list" | "task" | "tag"
+      modelProps: "user" | "account" | "session" | "verificationToken" | "list" | "userList" | "task" | "tag"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1082,6 +1115,80 @@ export namespace Prisma {
           }
         }
       }
+      UserList: {
+        payload: Prisma.$UserListPayload<ExtArgs>
+        fields: Prisma.UserListFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserListFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserListFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          findFirst: {
+            args: Prisma.UserListFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserListFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          findMany: {
+            args: Prisma.UserListFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>[]
+          }
+          create: {
+            args: Prisma.UserListCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          createMany: {
+            args: Prisma.UserListCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserListCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>[]
+          }
+          delete: {
+            args: Prisma.UserListDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          update: {
+            args: Prisma.UserListUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          deleteMany: {
+            args: Prisma.UserListDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserListUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserListUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>[]
+          }
+          upsert: {
+            args: Prisma.UserListUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserListPayload>
+          }
+          aggregate: {
+            args: Prisma.UserListAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserList>
+          }
+          groupBy: {
+            args: Prisma.UserListGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserListGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserListCountArgs<ExtArgs>
+            result: $Utils.Optional<UserListCountAggregateOutputType> | number
+          }
+        }
+      }
       Task: {
         payload: Prisma.$TaskPayload<ExtArgs>
         fields: Prisma.TaskFieldRefs
@@ -1319,6 +1426,7 @@ export namespace Prisma {
     session?: SessionOmit
     verificationToken?: VerificationTokenOmit
     list?: ListOmit
+    userList?: UserListOmit
     task?: TaskOmit
     tag?: TagOmit
   }
@@ -1417,17 +1525,17 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number
     sessions: number
-    lists: number
-    tasks: number
     tags: number
+    tasks: number
+    lists: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
-    lists?: boolean | UserCountOutputTypeCountListsArgs
-    tasks?: boolean | UserCountOutputTypeCountTasksArgs
     tags?: boolean | UserCountOutputTypeCountTagsArgs
+    tasks?: boolean | UserCountOutputTypeCountTasksArgs
+    lists?: boolean | UserCountOutputTypeCountListsArgs
   }
 
   // Custom InputTypes
@@ -1458,8 +1566,8 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ListWhereInput
+  export type UserCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TagWhereInput
   }
 
   /**
@@ -1472,8 +1580,8 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
-  export type UserCountOutputTypeCountTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: TagWhereInput
+  export type UserCountOutputTypeCountListsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserListWhereInput
   }
 
 
@@ -1483,10 +1591,12 @@ export namespace Prisma {
 
   export type ListCountOutputType = {
     tasks: number
+    users: number
   }
 
   export type ListCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     tasks?: boolean | ListCountOutputTypeCountTasksArgs
+    users?: boolean | ListCountOutputTypeCountUsersArgs
   }
 
   // Custom InputTypes
@@ -1505,6 +1615,13 @@ export namespace Prisma {
    */
   export type ListCountOutputTypeCountTasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TaskWhereInput
+  }
+
+  /**
+   * ListCountOutputType without action
+   */
+  export type ListCountOutputTypeCountUsersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserListWhereInput
   }
 
 
@@ -1597,40 +1714,40 @@ export namespace Prisma {
     id: string | null
     name: string | null
     email: string | null
-    emailVerified: string | null
     image: string | null
-    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    lastLogin: Date | null
+    emailVerified: string | null
     isActive: boolean | null
+    lastLogin: Date | null
+    role: string | null
   }
 
   export type UserMaxAggregateOutputType = {
     id: string | null
     name: string | null
     email: string | null
-    emailVerified: string | null
     image: string | null
-    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    lastLogin: Date | null
+    emailVerified: string | null
     isActive: boolean | null
+    lastLogin: Date | null
+    role: string | null
   }
 
   export type UserCountAggregateOutputType = {
     id: number
     name: number
     email: number
-    emailVerified: number
     image: number
-    role: number
     createdAt: number
     updatedAt: number
-    lastLogin: number
+    emailVerified: number
     isActive: number
+    lastLogin: number
     preferences: number
+    role: number
     _all: number
   }
 
@@ -1639,40 +1756,40 @@ export namespace Prisma {
     id?: true
     name?: true
     email?: true
-    emailVerified?: true
     image?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
-    lastLogin?: true
+    emailVerified?: true
     isActive?: true
+    lastLogin?: true
+    role?: true
   }
 
   export type UserMaxAggregateInputType = {
     id?: true
     name?: true
     email?: true
-    emailVerified?: true
     image?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
-    lastLogin?: true
+    emailVerified?: true
     isActive?: true
+    lastLogin?: true
+    role?: true
   }
 
   export type UserCountAggregateInputType = {
     id?: true
     name?: true
     email?: true
-    emailVerified?: true
     image?: true
-    role?: true
     createdAt?: true
     updatedAt?: true
-    lastLogin?: true
+    emailVerified?: true
     isActive?: true
+    lastLogin?: true
     preferences?: true
+    role?: true
     _all?: true
   }
 
@@ -1752,14 +1869,14 @@ export namespace Prisma {
     id: string
     name: string | null
     email: string | null
-    emailVerified: string | null
     image: string | null
-    role: string
     createdAt: Date
     updatedAt: Date
-    lastLogin: Date | null
+    emailVerified: string | null
     isActive: boolean
+    lastLogin: Date | null
     preferences: JsonValue | null
+    role: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -1783,19 +1900,19 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     email?: boolean
-    emailVerified?: boolean
     image?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lastLogin?: boolean
+    emailVerified?: boolean
     isActive?: boolean
+    lastLogin?: boolean
     preferences?: boolean
+    role?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
-    lists?: boolean | User$listsArgs<ExtArgs>
-    tasks?: boolean | User$tasksArgs<ExtArgs>
     tags?: boolean | User$tagsArgs<ExtArgs>
+    tasks?: boolean | User$tasksArgs<ExtArgs>
+    lists?: boolean | User$listsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1803,51 +1920,51 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     email?: boolean
-    emailVerified?: boolean
     image?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lastLogin?: boolean
+    emailVerified?: boolean
     isActive?: boolean
+    lastLogin?: boolean
     preferences?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
     email?: boolean
-    emailVerified?: boolean
     image?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lastLogin?: boolean
+    emailVerified?: boolean
     isActive?: boolean
+    lastLogin?: boolean
     preferences?: boolean
+    role?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
     id?: boolean
     name?: boolean
     email?: boolean
-    emailVerified?: boolean
     image?: boolean
-    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    lastLogin?: boolean
+    emailVerified?: boolean
     isActive?: boolean
+    lastLogin?: boolean
     preferences?: boolean
+    role?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "createdAt" | "updatedAt" | "lastLogin" | "isActive" | "preferences", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "image" | "createdAt" | "updatedAt" | "emailVerified" | "isActive" | "lastLogin" | "preferences" | "role", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
-    lists?: boolean | User$listsArgs<ExtArgs>
-    tasks?: boolean | User$tasksArgs<ExtArgs>
     tags?: boolean | User$tagsArgs<ExtArgs>
+    tasks?: boolean | User$tasksArgs<ExtArgs>
+    lists?: boolean | User$listsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1858,22 +1975,22 @@ export namespace Prisma {
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
-      lists: Prisma.$ListPayload<ExtArgs>[]
-      tasks: Prisma.$TaskPayload<ExtArgs>[]
       tags: Prisma.$TagPayload<ExtArgs>[]
+      tasks: Prisma.$TaskPayload<ExtArgs>[]
+      lists: Prisma.$UserListPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string | null
       email: string | null
-      emailVerified: string | null
       image: string | null
-      role: string
       createdAt: Date
       updatedAt: Date
-      lastLogin: Date | null
+      emailVerified: string | null
       isActive: boolean
+      lastLogin: Date | null
       preferences: Prisma.JsonValue | null
+      role: string
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -2270,9 +2387,9 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    lists<T extends User$listsArgs<ExtArgs> = {}>(args?: Subset<T, User$listsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    tasks<T extends User$tasksArgs<ExtArgs> = {}>(args?: Subset<T, User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     tags<T extends User$tagsArgs<ExtArgs> = {}>(args?: Subset<T, User$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tasks<T extends User$tasksArgs<ExtArgs> = {}>(args?: Subset<T, User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    lists<T extends User$listsArgs<ExtArgs> = {}>(args?: Subset<T, User$listsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2305,14 +2422,14 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
-    readonly emailVerified: FieldRef<"User", 'String'>
     readonly image: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
-    readonly lastLogin: FieldRef<"User", 'DateTime'>
+    readonly emailVerified: FieldRef<"User", 'String'>
     readonly isActive: FieldRef<"User", 'Boolean'>
+    readonly lastLogin: FieldRef<"User", 'DateTime'>
     readonly preferences: FieldRef<"User", 'Json'>
+    readonly role: FieldRef<"User", 'String'>
   }
     
 
@@ -2749,27 +2866,27 @@ export namespace Prisma {
   }
 
   /**
-   * User.lists
+   * User.tags
    */
-  export type User$listsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the List
+     * Select specific fields to fetch from the Tag
      */
-    select?: ListSelect<ExtArgs> | null
+    select?: TagSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the List
+     * Omit specific fields from the Tag
      */
-    omit?: ListOmit<ExtArgs> | null
+    omit?: TagOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ListInclude<ExtArgs> | null
-    where?: ListWhereInput
-    orderBy?: ListOrderByWithRelationInput | ListOrderByWithRelationInput[]
-    cursor?: ListWhereUniqueInput
+    include?: TagInclude<ExtArgs> | null
+    where?: TagWhereInput
+    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
+    cursor?: TagWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ListScalarFieldEnum | ListScalarFieldEnum[]
+    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
   }
 
   /**
@@ -2797,27 +2914,27 @@ export namespace Prisma {
   }
 
   /**
-   * User.tags
+   * User.lists
    */
-  export type User$tagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$listsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Tag
+     * Select specific fields to fetch from the UserList
      */
-    select?: TagSelect<ExtArgs> | null
+    select?: UserListSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Tag
+     * Omit specific fields from the UserList
      */
-    omit?: TagOmit<ExtArgs> | null
+    omit?: UserListOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: TagInclude<ExtArgs> | null
-    where?: TagWhereInput
-    orderBy?: TagOrderByWithRelationInput | TagOrderByWithRelationInput[]
-    cursor?: TagWhereUniqueInput
+    include?: UserListInclude<ExtArgs> | null
+    where?: UserListWhereInput
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    cursor?: UserListWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: TagScalarFieldEnum | TagScalarFieldEnum[]
+    distinct?: UserListScalarFieldEnum | UserListScalarFieldEnum[]
   }
 
   /**
@@ -6049,31 +6166,28 @@ export namespace Prisma {
   export type ListMinAggregateOutputType = {
     id: string | null
     name: string | null
-    description: string | null
-    color: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
+    color: string | null
+    description: string | null
   }
 
   export type ListMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    description: string | null
-    color: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
+    color: string | null
+    description: string | null
   }
 
   export type ListCountAggregateOutputType = {
     id: number
     name: number
-    description: number
-    color: number
     createdAt: number
     updatedAt: number
-    userId: number
+    color: number
+    description: number
     _all: number
   }
 
@@ -6081,31 +6195,28 @@ export namespace Prisma {
   export type ListMinAggregateInputType = {
     id?: true
     name?: true
-    description?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
+    color?: true
+    description?: true
   }
 
   export type ListMaxAggregateInputType = {
     id?: true
     name?: true
-    description?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
+    color?: true
+    description?: true
   }
 
   export type ListCountAggregateInputType = {
     id?: true
     name?: true
-    description?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
+    color?: true
+    description?: true
     _all?: true
   }
 
@@ -6184,11 +6295,10 @@ export namespace Prisma {
   export type ListGroupByOutputType = {
     id: string
     name: string
-    description: string | null
-    color: string | null
     createdAt: Date
     updatedAt: Date
-    userId: string
+    color: string | null
+    description: string | null
     _count: ListCountAggregateOutputType | null
     _min: ListMinAggregateOutputType | null
     _max: ListMaxAggregateOutputType | null
@@ -6211,75 +6321,64 @@ export namespace Prisma {
   export type ListSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    description?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    color?: boolean
+    description?: boolean
     tasks?: boolean | List$tasksArgs<ExtArgs>
+    users?: boolean | List$usersArgs<ExtArgs>
     _count?: boolean | ListCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["list"]>
 
   export type ListSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    description?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    color?: boolean
+    description?: boolean
   }, ExtArgs["result"]["list"]>
 
   export type ListSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    description?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
+    color?: boolean
+    description?: boolean
   }, ExtArgs["result"]["list"]>
 
   export type ListSelectScalar = {
     id?: boolean
     name?: boolean
-    description?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
+    color?: boolean
+    description?: boolean
   }
 
-  export type ListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "color" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["list"]>
+  export type ListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "color" | "description", ExtArgs["result"]["list"]>
   export type ListInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     tasks?: boolean | List$tasksArgs<ExtArgs>
+    users?: boolean | List$usersArgs<ExtArgs>
     _count?: boolean | ListCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type ListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type ListIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
+  export type ListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type ListIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $ListPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "List"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       tasks: Prisma.$TaskPayload<ExtArgs>[]
+      users: Prisma.$UserListPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      description: string | null
-      color: string | null
       createdAt: Date
       updatedAt: Date
-      userId: string
+      color: string | null
+      description: string | null
     }, ExtArgs["result"]["list"]>
     composites: {}
   }
@@ -6674,8 +6773,8 @@ export namespace Prisma {
    */
   export interface Prisma__ListClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     tasks<T extends List$tasksArgs<ExtArgs> = {}>(args?: Subset<T, List$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends List$usersArgs<ExtArgs> = {}>(args?: Subset<T, List$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6707,11 +6806,10 @@ export namespace Prisma {
   interface ListFieldRefs {
     readonly id: FieldRef<"List", 'String'>
     readonly name: FieldRef<"List", 'String'>
-    readonly description: FieldRef<"List", 'String'>
-    readonly color: FieldRef<"List", 'String'>
     readonly createdAt: FieldRef<"List", 'DateTime'>
     readonly updatedAt: FieldRef<"List", 'DateTime'>
-    readonly userId: FieldRef<"List", 'String'>
+    readonly color: FieldRef<"List", 'String'>
+    readonly description: FieldRef<"List", 'String'>
   }
     
 
@@ -6961,10 +7059,6 @@ export namespace Prisma {
      */
     data: ListCreateManyInput | ListCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ListIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7035,10 +7129,6 @@ export namespace Prisma {
      * Limit how many Lists to update.
      */
     limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ListIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7132,6 +7222,30 @@ export namespace Prisma {
   }
 
   /**
+   * List.users
+   */
+  export type List$usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    where?: UserListWhereInput
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    cursor?: UserListWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserListScalarFieldEnum | UserListScalarFieldEnum[]
+  }
+
+  /**
    * List without action
    */
   export type ListDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7151,6 +7265,1085 @@ export namespace Prisma {
 
 
   /**
+   * Model UserList
+   */
+
+  export type AggregateUserList = {
+    _count: UserListCountAggregateOutputType | null
+    _min: UserListMinAggregateOutputType | null
+    _max: UserListMaxAggregateOutputType | null
+  }
+
+  export type UserListMinAggregateOutputType = {
+    id: string | null
+    role: $Enums.CollaborationRole | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: string | null
+    listId: string | null
+  }
+
+  export type UserListMaxAggregateOutputType = {
+    id: string | null
+    role: $Enums.CollaborationRole | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: string | null
+    listId: string | null
+  }
+
+  export type UserListCountAggregateOutputType = {
+    id: number
+    role: number
+    createdAt: number
+    updatedAt: number
+    userId: number
+    listId: number
+    _all: number
+  }
+
+
+  export type UserListMinAggregateInputType = {
+    id?: true
+    role?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    listId?: true
+  }
+
+  export type UserListMaxAggregateInputType = {
+    id?: true
+    role?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    listId?: true
+  }
+
+  export type UserListCountAggregateInputType = {
+    id?: true
+    role?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    listId?: true
+    _all?: true
+  }
+
+  export type UserListAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserList to aggregate.
+     */
+    where?: UserListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLists to fetch.
+     */
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserLists
+    **/
+    _count?: true | UserListCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserListMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserListMaxAggregateInputType
+  }
+
+  export type GetUserListAggregateType<T extends UserListAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserList]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserList[P]>
+      : GetScalarType<T[P], AggregateUserList[P]>
+  }
+
+
+
+
+  export type UserListGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserListWhereInput
+    orderBy?: UserListOrderByWithAggregationInput | UserListOrderByWithAggregationInput[]
+    by: UserListScalarFieldEnum[] | UserListScalarFieldEnum
+    having?: UserListScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserListCountAggregateInputType | true
+    _min?: UserListMinAggregateInputType
+    _max?: UserListMaxAggregateInputType
+  }
+
+  export type UserListGroupByOutputType = {
+    id: string
+    role: $Enums.CollaborationRole
+    createdAt: Date
+    updatedAt: Date
+    userId: string
+    listId: string
+    _count: UserListCountAggregateOutputType | null
+    _min: UserListMinAggregateOutputType | null
+    _max: UserListMaxAggregateOutputType | null
+  }
+
+  type GetUserListGroupByPayload<T extends UserListGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserListGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserListGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserListGroupByOutputType[P]>
+            : GetScalarType<T[P], UserListGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserListSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    role?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    listId?: boolean
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userList"]>
+
+  export type UserListSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    role?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    listId?: boolean
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userList"]>
+
+  export type UserListSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    role?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    listId?: boolean
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userList"]>
+
+  export type UserListSelectScalar = {
+    id?: boolean
+    role?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    listId?: boolean
+  }
+
+  export type UserListOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "createdAt" | "updatedAt" | "userId" | "listId", ExtArgs["result"]["userList"]>
+  export type UserListInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserListIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserListIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    list?: boolean | ListDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserListPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserList"
+    objects: {
+      list: Prisma.$ListPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      role: $Enums.CollaborationRole
+      createdAt: Date
+      updatedAt: Date
+      userId: string
+      listId: string
+    }, ExtArgs["result"]["userList"]>
+    composites: {}
+  }
+
+  type UserListGetPayload<S extends boolean | null | undefined | UserListDefaultArgs> = $Result.GetResult<Prisma.$UserListPayload, S>
+
+  type UserListCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserListFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserListCountAggregateInputType | true
+    }
+
+  export interface UserListDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserList'], meta: { name: 'UserList' } }
+    /**
+     * Find zero or one UserList that matches the filter.
+     * @param {UserListFindUniqueArgs} args - Arguments to find a UserList
+     * @example
+     * // Get one UserList
+     * const userList = await prisma.userList.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserListFindUniqueArgs>(args: SelectSubset<T, UserListFindUniqueArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserList that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserListFindUniqueOrThrowArgs} args - Arguments to find a UserList
+     * @example
+     * // Get one UserList
+     * const userList = await prisma.userList.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserListFindUniqueOrThrowArgs>(args: SelectSubset<T, UserListFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserList that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListFindFirstArgs} args - Arguments to find a UserList
+     * @example
+     * // Get one UserList
+     * const userList = await prisma.userList.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserListFindFirstArgs>(args?: SelectSubset<T, UserListFindFirstArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserList that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListFindFirstOrThrowArgs} args - Arguments to find a UserList
+     * @example
+     * // Get one UserList
+     * const userList = await prisma.userList.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserListFindFirstOrThrowArgs>(args?: SelectSubset<T, UserListFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserLists that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserLists
+     * const userLists = await prisma.userList.findMany()
+     * 
+     * // Get first 10 UserLists
+     * const userLists = await prisma.userList.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userListWithIdOnly = await prisma.userList.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserListFindManyArgs>(args?: SelectSubset<T, UserListFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserList.
+     * @param {UserListCreateArgs} args - Arguments to create a UserList.
+     * @example
+     * // Create one UserList
+     * const UserList = await prisma.userList.create({
+     *   data: {
+     *     // ... data to create a UserList
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserListCreateArgs>(args: SelectSubset<T, UserListCreateArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserLists.
+     * @param {UserListCreateManyArgs} args - Arguments to create many UserLists.
+     * @example
+     * // Create many UserLists
+     * const userList = await prisma.userList.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserListCreateManyArgs>(args?: SelectSubset<T, UserListCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserLists and returns the data saved in the database.
+     * @param {UserListCreateManyAndReturnArgs} args - Arguments to create many UserLists.
+     * @example
+     * // Create many UserLists
+     * const userList = await prisma.userList.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserLists and only return the `id`
+     * const userListWithIdOnly = await prisma.userList.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserListCreateManyAndReturnArgs>(args?: SelectSubset<T, UserListCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserList.
+     * @param {UserListDeleteArgs} args - Arguments to delete one UserList.
+     * @example
+     * // Delete one UserList
+     * const UserList = await prisma.userList.delete({
+     *   where: {
+     *     // ... filter to delete one UserList
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserListDeleteArgs>(args: SelectSubset<T, UserListDeleteArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserList.
+     * @param {UserListUpdateArgs} args - Arguments to update one UserList.
+     * @example
+     * // Update one UserList
+     * const userList = await prisma.userList.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserListUpdateArgs>(args: SelectSubset<T, UserListUpdateArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserLists.
+     * @param {UserListDeleteManyArgs} args - Arguments to filter UserLists to delete.
+     * @example
+     * // Delete a few UserLists
+     * const { count } = await prisma.userList.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserListDeleteManyArgs>(args?: SelectSubset<T, UserListDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserLists
+     * const userList = await prisma.userList.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserListUpdateManyArgs>(args: SelectSubset<T, UserListUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserLists and returns the data updated in the database.
+     * @param {UserListUpdateManyAndReturnArgs} args - Arguments to update many UserLists.
+     * @example
+     * // Update many UserLists
+     * const userList = await prisma.userList.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserLists and only return the `id`
+     * const userListWithIdOnly = await prisma.userList.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserListUpdateManyAndReturnArgs>(args: SelectSubset<T, UserListUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserList.
+     * @param {UserListUpsertArgs} args - Arguments to update or create a UserList.
+     * @example
+     * // Update or create a UserList
+     * const userList = await prisma.userList.upsert({
+     *   create: {
+     *     // ... data to create a UserList
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserList we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserListUpsertArgs>(args: SelectSubset<T, UserListUpsertArgs<ExtArgs>>): Prisma__UserListClient<$Result.GetResult<Prisma.$UserListPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserLists.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListCountArgs} args - Arguments to filter UserLists to count.
+     * @example
+     * // Count the number of UserLists
+     * const count = await prisma.userList.count({
+     *   where: {
+     *     // ... the filter for the UserLists we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserListCountArgs>(
+      args?: Subset<T, UserListCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserListCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserList.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserListAggregateArgs>(args: Subset<T, UserListAggregateArgs>): Prisma.PrismaPromise<GetUserListAggregateType<T>>
+
+    /**
+     * Group by UserList.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserListGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserListGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserListGroupByArgs['orderBy'] }
+        : { orderBy?: UserListGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserListGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserListGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserList model
+   */
+  readonly fields: UserListFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserList.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserListClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    list<T extends ListDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ListDefaultArgs<ExtArgs>>): Prisma__ListClient<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserList model
+   */
+  interface UserListFieldRefs {
+    readonly id: FieldRef<"UserList", 'String'>
+    readonly role: FieldRef<"UserList", 'CollaborationRole'>
+    readonly createdAt: FieldRef<"UserList", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserList", 'DateTime'>
+    readonly userId: FieldRef<"UserList", 'String'>
+    readonly listId: FieldRef<"UserList", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserList findUnique
+   */
+  export type UserListFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter, which UserList to fetch.
+     */
+    where: UserListWhereUniqueInput
+  }
+
+  /**
+   * UserList findUniqueOrThrow
+   */
+  export type UserListFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter, which UserList to fetch.
+     */
+    where: UserListWhereUniqueInput
+  }
+
+  /**
+   * UserList findFirst
+   */
+  export type UserListFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter, which UserList to fetch.
+     */
+    where?: UserListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLists to fetch.
+     */
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLists.
+     */
+    cursor?: UserListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLists.
+     */
+    distinct?: UserListScalarFieldEnum | UserListScalarFieldEnum[]
+  }
+
+  /**
+   * UserList findFirstOrThrow
+   */
+  export type UserListFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter, which UserList to fetch.
+     */
+    where?: UserListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLists to fetch.
+     */
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserLists.
+     */
+    cursor?: UserListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLists.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserLists.
+     */
+    distinct?: UserListScalarFieldEnum | UserListScalarFieldEnum[]
+  }
+
+  /**
+   * UserList findMany
+   */
+  export type UserListFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter, which UserLists to fetch.
+     */
+    where?: UserListWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserLists to fetch.
+     */
+    orderBy?: UserListOrderByWithRelationInput | UserListOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserLists.
+     */
+    cursor?: UserListWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserLists from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserLists.
+     */
+    skip?: number
+    distinct?: UserListScalarFieldEnum | UserListScalarFieldEnum[]
+  }
+
+  /**
+   * UserList create
+   */
+  export type UserListCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserList.
+     */
+    data: XOR<UserListCreateInput, UserListUncheckedCreateInput>
+  }
+
+  /**
+   * UserList createMany
+   */
+  export type UserListCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserLists.
+     */
+    data: UserListCreateManyInput | UserListCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserList createManyAndReturn
+   */
+  export type UserListCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserLists.
+     */
+    data: UserListCreateManyInput | UserListCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserList update
+   */
+  export type UserListUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserList.
+     */
+    data: XOR<UserListUpdateInput, UserListUncheckedUpdateInput>
+    /**
+     * Choose, which UserList to update.
+     */
+    where: UserListWhereUniqueInput
+  }
+
+  /**
+   * UserList updateMany
+   */
+  export type UserListUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserLists.
+     */
+    data: XOR<UserListUpdateManyMutationInput, UserListUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLists to update
+     */
+    where?: UserListWhereInput
+    /**
+     * Limit how many UserLists to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserList updateManyAndReturn
+   */
+  export type UserListUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * The data used to update UserLists.
+     */
+    data: XOR<UserListUpdateManyMutationInput, UserListUncheckedUpdateManyInput>
+    /**
+     * Filter which UserLists to update
+     */
+    where?: UserListWhereInput
+    /**
+     * Limit how many UserLists to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserList upsert
+   */
+  export type UserListUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserList to update in case it exists.
+     */
+    where: UserListWhereUniqueInput
+    /**
+     * In case the UserList found by the `where` argument doesn't exist, create a new UserList with this data.
+     */
+    create: XOR<UserListCreateInput, UserListUncheckedCreateInput>
+    /**
+     * In case the UserList was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserListUpdateInput, UserListUncheckedUpdateInput>
+  }
+
+  /**
+   * UserList delete
+   */
+  export type UserListDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+    /**
+     * Filter which UserList to delete.
+     */
+    where: UserListWhereUniqueInput
+  }
+
+  /**
+   * UserList deleteMany
+   */
+  export type UserListDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserLists to delete
+     */
+    where?: UserListWhereInput
+    /**
+     * Limit how many UserLists to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserList without action
+   */
+  export type UserListDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserList
+     */
+    select?: UserListSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserList
+     */
+    omit?: UserListOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserListInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Task
    */
 
@@ -7164,13 +8357,13 @@ export namespace Prisma {
     id: string | null
     title: string | null
     description: string | null
-    severity: string | null
-    dueDate: Date | null
     completed: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    dueDate: Date | null
     userId: string | null
     listId: string | null
+    severity: string | null
     parentId: string | null
   }
 
@@ -7178,13 +8371,13 @@ export namespace Prisma {
     id: string | null
     title: string | null
     description: string | null
-    severity: string | null
-    dueDate: Date | null
     completed: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
+    dueDate: Date | null
     userId: string | null
     listId: string | null
+    severity: string | null
     parentId: string | null
   }
 
@@ -7192,13 +8385,13 @@ export namespace Prisma {
     id: number
     title: number
     description: number
-    severity: number
-    dueDate: number
     completed: number
     createdAt: number
     updatedAt: number
+    dueDate: number
     userId: number
     listId: number
+    severity: number
     parentId: number
     _all: number
   }
@@ -7208,13 +8401,13 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    severity?: true
-    dueDate?: true
     completed?: true
     createdAt?: true
     updatedAt?: true
+    dueDate?: true
     userId?: true
     listId?: true
+    severity?: true
     parentId?: true
   }
 
@@ -7222,13 +8415,13 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    severity?: true
-    dueDate?: true
     completed?: true
     createdAt?: true
     updatedAt?: true
+    dueDate?: true
     userId?: true
     listId?: true
+    severity?: true
     parentId?: true
   }
 
@@ -7236,13 +8429,13 @@ export namespace Prisma {
     id?: true
     title?: true
     description?: true
-    severity?: true
-    dueDate?: true
     completed?: true
     createdAt?: true
     updatedAt?: true
+    dueDate?: true
     userId?: true
     listId?: true
+    severity?: true
     parentId?: true
     _all?: true
   }
@@ -7323,13 +8516,13 @@ export namespace Prisma {
     id: string
     title: string
     description: string | null
-    severity: string
-    dueDate: Date | null
     completed: boolean
     createdAt: Date
     updatedAt: Date
+    dueDate: Date | null
     userId: string
     listId: string | null
+    severity: string
     parentId: string | null
     _count: TaskCountAggregateOutputType | null
     _min: TaskMinAggregateOutputType | null
@@ -7354,18 +8547,18 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    severity?: boolean
-    dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    dueDate?: boolean
     userId?: boolean
     listId?: boolean
+    severity?: boolean
     parentId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
     subtasks?: boolean | Task$subtasksArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     tags?: boolean | Task$tagsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
@@ -7374,90 +8567,90 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     description?: boolean
-    severity?: boolean
-    dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    dueDate?: boolean
     userId?: boolean
     listId?: boolean
+    severity?: boolean
     parentId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
     description?: boolean
-    severity?: boolean
-    dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    dueDate?: boolean
     userId?: boolean
     listId?: boolean
+    severity?: boolean
     parentId?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["task"]>
 
   export type TaskSelectScalar = {
     id?: boolean
     title?: boolean
     description?: boolean
-    severity?: boolean
-    dueDate?: boolean
     completed?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    dueDate?: boolean
     userId?: boolean
     listId?: boolean
+    severity?: boolean
     parentId?: boolean
   }
 
-  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "severity" | "dueDate" | "completed" | "createdAt" | "updatedAt" | "userId" | "listId" | "parentId", ExtArgs["result"]["task"]>
+  export type TaskOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "completed" | "createdAt" | "updatedAt" | "dueDate" | "userId" | "listId" | "severity" | "parentId", ExtArgs["result"]["task"]>
   export type TaskInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
     subtasks?: boolean | Task$subtasksArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     tags?: boolean | Task$tagsArgs<ExtArgs>
     _count?: boolean | TaskCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TaskIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type TaskIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     list?: boolean | Task$listArgs<ExtArgs>
     parent?: boolean | Task$parentArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $TaskPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Task"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       list: Prisma.$ListPayload<ExtArgs> | null
       parent: Prisma.$TaskPayload<ExtArgs> | null
       subtasks: Prisma.$TaskPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
       tags: Prisma.$TagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       title: string
       description: string | null
-      severity: string
-      dueDate: Date | null
       completed: boolean
       createdAt: Date
       updatedAt: Date
+      dueDate: Date | null
       userId: string
       listId: string | null
+      severity: string
       parentId: string | null
     }, ExtArgs["result"]["task"]>
     composites: {}
@@ -7853,10 +9046,10 @@ export namespace Prisma {
    */
   export interface Prisma__TaskClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     list<T extends Task$listArgs<ExtArgs> = {}>(args?: Subset<T, Task$listArgs<ExtArgs>>): Prisma__ListClient<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     parent<T extends Task$parentArgs<ExtArgs> = {}>(args?: Subset<T, Task$parentArgs<ExtArgs>>): Prisma__TaskClient<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     subtasks<T extends Task$subtasksArgs<ExtArgs> = {}>(args?: Subset<T, Task$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     tags<T extends Task$tagsArgs<ExtArgs> = {}>(args?: Subset<T, Task$tagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7890,13 +9083,13 @@ export namespace Prisma {
     readonly id: FieldRef<"Task", 'String'>
     readonly title: FieldRef<"Task", 'String'>
     readonly description: FieldRef<"Task", 'String'>
-    readonly severity: FieldRef<"Task", 'String'>
-    readonly dueDate: FieldRef<"Task", 'DateTime'>
     readonly completed: FieldRef<"Task", 'Boolean'>
     readonly createdAt: FieldRef<"Task", 'DateTime'>
     readonly updatedAt: FieldRef<"Task", 'DateTime'>
+    readonly dueDate: FieldRef<"Task", 'DateTime'>
     readonly userId: FieldRef<"Task", 'String'>
     readonly listId: FieldRef<"Task", 'String'>
+    readonly severity: FieldRef<"Task", 'String'>
     readonly parentId: FieldRef<"Task", 'String'>
   }
     
@@ -8411,28 +9604,28 @@ export namespace Prisma {
   export type TagMinAggregateOutputType = {
     id: string | null
     name: string | null
-    color: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
+    color: string | null
   }
 
   export type TagMaxAggregateOutputType = {
     id: string | null
     name: string | null
-    color: string | null
     createdAt: Date | null
     updatedAt: Date | null
     userId: string | null
+    color: string | null
   }
 
   export type TagCountAggregateOutputType = {
     id: number
     name: number
-    color: number
     createdAt: number
     updatedAt: number
     userId: number
+    color: number
     _all: number
   }
 
@@ -8440,28 +9633,28 @@ export namespace Prisma {
   export type TagMinAggregateInputType = {
     id?: true
     name?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
+    color?: true
   }
 
   export type TagMaxAggregateInputType = {
     id?: true
     name?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
+    color?: true
   }
 
   export type TagCountAggregateInputType = {
     id?: true
     name?: true
-    color?: true
     createdAt?: true
     updatedAt?: true
     userId?: true
+    color?: true
     _all?: true
   }
 
@@ -8540,10 +9733,10 @@ export namespace Prisma {
   export type TagGroupByOutputType = {
     id: string
     name: string
-    color: string | null
     createdAt: Date
     updatedAt: Date
     userId: string
+    color: string | null
     _count: TagCountAggregateOutputType | null
     _min: TagMinAggregateOutputType | null
     _max: TagMaxAggregateOutputType | null
@@ -8566,10 +9759,10 @@ export namespace Prisma {
   export type TagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
+    color?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     tasks?: boolean | Tag$tasksArgs<ExtArgs>
     _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
@@ -8578,33 +9771,33 @@ export namespace Prisma {
   export type TagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
+    color?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tag"]>
 
   export type TagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
+    color?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tag"]>
 
   export type TagSelectScalar = {
     id?: boolean
     name?: boolean
-    color?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     userId?: boolean
+    color?: boolean
   }
 
-  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "color" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["tag"]>
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "createdAt" | "updatedAt" | "userId" | "color", ExtArgs["result"]["tag"]>
   export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     tasks?: boolean | Tag$tasksArgs<ExtArgs>
@@ -8626,10 +9819,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      color: string | null
       createdAt: Date
       updatedAt: Date
       userId: string
+      color: string | null
     }, ExtArgs["result"]["tag"]>
     composites: {}
   }
@@ -9057,10 +10250,10 @@ export namespace Prisma {
   interface TagFieldRefs {
     readonly id: FieldRef<"Tag", 'String'>
     readonly name: FieldRef<"Tag", 'String'>
-    readonly color: FieldRef<"Tag", 'String'>
     readonly createdAt: FieldRef<"Tag", 'DateTime'>
     readonly updatedAt: FieldRef<"Tag", 'DateTime'>
     readonly userId: FieldRef<"Tag", 'String'>
+    readonly color: FieldRef<"Tag", 'String'>
   }
     
 
@@ -9517,14 +10710,14 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     email: 'email',
-    emailVerified: 'emailVerified',
     image: 'image',
-    role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    lastLogin: 'lastLogin',
+    emailVerified: 'emailVerified',
     isActive: 'isActive',
-    preferences: 'preferences'
+    lastLogin: 'lastLogin',
+    preferences: 'preferences',
+    role: 'role'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -9570,27 +10763,38 @@ export namespace Prisma {
   export const ListScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    description: 'description',
-    color: 'color',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    userId: 'userId'
+    color: 'color',
+    description: 'description'
   };
 
   export type ListScalarFieldEnum = (typeof ListScalarFieldEnum)[keyof typeof ListScalarFieldEnum]
+
+
+  export const UserListScalarFieldEnum: {
+    id: 'id',
+    role: 'role',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    userId: 'userId',
+    listId: 'listId'
+  };
+
+  export type UserListScalarFieldEnum = (typeof UserListScalarFieldEnum)[keyof typeof UserListScalarFieldEnum]
 
 
   export const TaskScalarFieldEnum: {
     id: 'id',
     title: 'title',
     description: 'description',
-    severity: 'severity',
-    dueDate: 'dueDate',
     completed: 'completed',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    dueDate: 'dueDate',
     userId: 'userId',
     listId: 'listId',
+    severity: 'severity',
     parentId: 'parentId'
   };
 
@@ -9600,10 +10804,10 @@ export namespace Prisma {
   export const TagScalarFieldEnum: {
     id: 'id',
     name: 'name',
-    color: 'color',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    userId: 'userId'
+    userId: 'userId',
+    color: 'color'
   };
 
   export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
@@ -9719,6 +10923,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CollaborationRole'
+   */
+  export type EnumCollaborationRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CollaborationRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'CollaborationRole[]'
+   */
+  export type ListEnumCollaborationRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CollaborationRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -9742,38 +10960,38 @@ export namespace Prisma {
     id?: StringFilter<"User"> | string
     name?: StringNullableFilter<"User"> | string | null
     email?: StringNullableFilter<"User"> | string | null
-    emailVerified?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerified?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
+    lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     preferences?: JsonNullableFilter<"User">
+    role?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
-    lists?: ListListRelationFilter
-    tasks?: TaskListRelationFilter
     tags?: TagListRelationFilter
+    tasks?: TaskListRelationFilter
+    lists?: UserListListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    lastLogin?: SortOrderInput | SortOrder
+    emailVerified?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    lastLogin?: SortOrderInput | SortOrder
     preferences?: SortOrderInput | SortOrder
+    role?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
-    lists?: ListOrderByRelationAggregateInput
-    tasks?: TaskOrderByRelationAggregateInput
     tags?: TagOrderByRelationAggregateInput
+    tasks?: TaskOrderByRelationAggregateInput
+    lists?: UserListOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -9783,33 +11001,33 @@ export namespace Prisma {
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
-    emailVerified?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-    lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerified?: StringNullableFilter<"User"> | string | null
     isActive?: BoolFilter<"User"> | boolean
+    lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     preferences?: JsonNullableFilter<"User">
+    role?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
-    lists?: ListListRelationFilter
-    tasks?: TaskListRelationFilter
     tags?: TagListRelationFilter
+    tasks?: TaskListRelationFilter
+    lists?: UserListListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
-    emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    lastLogin?: SortOrderInput | SortOrder
+    emailVerified?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    lastLogin?: SortOrderInput | SortOrder
     preferences?: SortOrderInput | SortOrder
+    role?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -9822,14 +11040,14 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"User"> | string
     name?: StringNullableWithAggregatesFilter<"User"> | string | null
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
-    emailVerified?: StringNullableWithAggregatesFilter<"User"> | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
-    role?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
-    lastLogin?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    emailVerified?: StringNullableWithAggregatesFilter<"User"> | string | null
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
+    lastLogin?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     preferences?: JsonNullableWithAggregatesFilter<"User">
+    role?: StringWithAggregatesFilter<"User"> | string
   }
 
   export type AccountWhereInput = {
@@ -10024,25 +11242,23 @@ export namespace Prisma {
     NOT?: ListWhereInput | ListWhereInput[]
     id?: StringFilter<"List"> | string
     name?: StringFilter<"List"> | string
-    description?: StringNullableFilter<"List"> | string | null
-    color?: StringNullableFilter<"List"> | string | null
     createdAt?: DateTimeFilter<"List"> | Date | string
     updatedAt?: DateTimeFilter<"List"> | Date | string
-    userId?: StringFilter<"List"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    color?: StringNullableFilter<"List"> | string | null
+    description?: StringNullableFilter<"List"> | string | null
     tasks?: TaskListRelationFilter
+    users?: UserListListRelationFilter
   }
 
   export type ListOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    color?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
-    user?: UserOrderByWithRelationInput
+    color?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     tasks?: TaskOrderByRelationAggregateInput
+    users?: UserListOrderByRelationAggregateInput
   }
 
   export type ListWhereUniqueInput = Prisma.AtLeast<{
@@ -10051,23 +11267,21 @@ export namespace Prisma {
     OR?: ListWhereInput[]
     NOT?: ListWhereInput | ListWhereInput[]
     name?: StringFilter<"List"> | string
-    description?: StringNullableFilter<"List"> | string | null
-    color?: StringNullableFilter<"List"> | string | null
     createdAt?: DateTimeFilter<"List"> | Date | string
     updatedAt?: DateTimeFilter<"List"> | Date | string
-    userId?: StringFilter<"List"> | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    color?: StringNullableFilter<"List"> | string | null
+    description?: StringNullableFilter<"List"> | string | null
     tasks?: TaskListRelationFilter
+    users?: UserListListRelationFilter
   }, "id">
 
   export type ListOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrderInput | SortOrder
-    color?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
+    color?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     _count?: ListCountOrderByAggregateInput
     _max?: ListMaxOrderByAggregateInput
     _min?: ListMinOrderByAggregateInput
@@ -10079,11 +11293,74 @@ export namespace Prisma {
     NOT?: ListScalarWhereWithAggregatesInput | ListScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"List"> | string
     name?: StringWithAggregatesFilter<"List"> | string
-    description?: StringNullableWithAggregatesFilter<"List"> | string | null
-    color?: StringNullableWithAggregatesFilter<"List"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"List"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"List"> | Date | string
-    userId?: StringWithAggregatesFilter<"List"> | string
+    color?: StringNullableWithAggregatesFilter<"List"> | string | null
+    description?: StringNullableWithAggregatesFilter<"List"> | string | null
+  }
+
+  export type UserListWhereInput = {
+    AND?: UserListWhereInput | UserListWhereInput[]
+    OR?: UserListWhereInput[]
+    NOT?: UserListWhereInput | UserListWhereInput[]
+    id?: StringFilter<"UserList"> | string
+    role?: EnumCollaborationRoleFilter<"UserList"> | $Enums.CollaborationRole
+    createdAt?: DateTimeFilter<"UserList"> | Date | string
+    updatedAt?: DateTimeFilter<"UserList"> | Date | string
+    userId?: StringFilter<"UserList"> | string
+    listId?: StringFilter<"UserList"> | string
+    list?: XOR<ListScalarRelationFilter, ListWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserListOrderByWithRelationInput = {
+    id?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    listId?: SortOrder
+    list?: ListOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserListWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_listId?: UserListUserIdListIdCompoundUniqueInput
+    AND?: UserListWhereInput | UserListWhereInput[]
+    OR?: UserListWhereInput[]
+    NOT?: UserListWhereInput | UserListWhereInput[]
+    role?: EnumCollaborationRoleFilter<"UserList"> | $Enums.CollaborationRole
+    createdAt?: DateTimeFilter<"UserList"> | Date | string
+    updatedAt?: DateTimeFilter<"UserList"> | Date | string
+    userId?: StringFilter<"UserList"> | string
+    listId?: StringFilter<"UserList"> | string
+    list?: XOR<ListScalarRelationFilter, ListWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_listId">
+
+  export type UserListOrderByWithAggregationInput = {
+    id?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    listId?: SortOrder
+    _count?: UserListCountOrderByAggregateInput
+    _max?: UserListMaxOrderByAggregateInput
+    _min?: UserListMinOrderByAggregateInput
+  }
+
+  export type UserListScalarWhereWithAggregatesInput = {
+    AND?: UserListScalarWhereWithAggregatesInput | UserListScalarWhereWithAggregatesInput[]
+    OR?: UserListScalarWhereWithAggregatesInput[]
+    NOT?: UserListScalarWhereWithAggregatesInput | UserListScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"UserList"> | string
+    role?: EnumCollaborationRoleWithAggregatesFilter<"UserList"> | $Enums.CollaborationRole
+    createdAt?: DateTimeWithAggregatesFilter<"UserList"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserList"> | Date | string
+    userId?: StringWithAggregatesFilter<"UserList"> | string
+    listId?: StringWithAggregatesFilter<"UserList"> | string
   }
 
   export type TaskWhereInput = {
@@ -10093,18 +11370,18 @@ export namespace Prisma {
     id?: StringFilter<"Task"> | string
     title?: StringFilter<"Task"> | string
     description?: StringNullableFilter<"Task"> | string | null
-    severity?: StringFilter<"Task"> | string
-    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     completed?: BoolFilter<"Task"> | boolean
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    severity?: StringFilter<"Task"> | string
     parentId?: StringNullableFilter<"Task"> | string | null
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     list?: XOR<ListNullableScalarRelationFilter, ListWhereInput> | null
     parent?: XOR<TaskNullableScalarRelationFilter, TaskWhereInput> | null
     subtasks?: TaskListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tags?: TagListRelationFilter
   }
 
@@ -10112,18 +11389,18 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    severity?: SortOrder
-    dueDate?: SortOrderInput | SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
     userId?: SortOrder
     listId?: SortOrderInput | SortOrder
+    severity?: SortOrder
     parentId?: SortOrderInput | SortOrder
-    user?: UserOrderByWithRelationInput
     list?: ListOrderByWithRelationInput
     parent?: TaskOrderByWithRelationInput
     subtasks?: TaskOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
     tags?: TagOrderByRelationAggregateInput
   }
 
@@ -10134,18 +11411,18 @@ export namespace Prisma {
     NOT?: TaskWhereInput | TaskWhereInput[]
     title?: StringFilter<"Task"> | string
     description?: StringNullableFilter<"Task"> | string | null
-    severity?: StringFilter<"Task"> | string
-    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     completed?: BoolFilter<"Task"> | boolean
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    severity?: StringFilter<"Task"> | string
     parentId?: StringNullableFilter<"Task"> | string | null
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     list?: XOR<ListNullableScalarRelationFilter, ListWhereInput> | null
     parent?: XOR<TaskNullableScalarRelationFilter, TaskWhereInput> | null
     subtasks?: TaskListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tags?: TagListRelationFilter
   }, "id">
 
@@ -10153,13 +11430,13 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrderInput | SortOrder
-    severity?: SortOrder
-    dueDate?: SortOrderInput | SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    dueDate?: SortOrderInput | SortOrder
     userId?: SortOrder
     listId?: SortOrderInput | SortOrder
+    severity?: SortOrder
     parentId?: SortOrderInput | SortOrder
     _count?: TaskCountOrderByAggregateInput
     _max?: TaskMaxOrderByAggregateInput
@@ -10173,13 +11450,13 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Task"> | string
     title?: StringWithAggregatesFilter<"Task"> | string
     description?: StringNullableWithAggregatesFilter<"Task"> | string | null
-    severity?: StringWithAggregatesFilter<"Task"> | string
-    dueDate?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     completed?: BoolWithAggregatesFilter<"Task"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Task"> | Date | string
+    dueDate?: DateTimeNullableWithAggregatesFilter<"Task"> | Date | string | null
     userId?: StringWithAggregatesFilter<"Task"> | string
     listId?: StringNullableWithAggregatesFilter<"Task"> | string | null
+    severity?: StringWithAggregatesFilter<"Task"> | string
     parentId?: StringNullableWithAggregatesFilter<"Task"> | string | null
   }
 
@@ -10189,10 +11466,10 @@ export namespace Prisma {
     NOT?: TagWhereInput | TagWhereInput[]
     id?: StringFilter<"Tag"> | string
     name?: StringFilter<"Tag"> | string
-    color?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
     updatedAt?: DateTimeFilter<"Tag"> | Date | string
     userId?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tasks?: TaskListRelationFilter
   }
@@ -10200,10 +11477,10 @@ export namespace Prisma {
   export type TagOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    color?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    color?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     tasks?: TaskOrderByRelationAggregateInput
   }
@@ -10214,10 +11491,10 @@ export namespace Prisma {
     OR?: TagWhereInput[]
     NOT?: TagWhereInput | TagWhereInput[]
     name?: StringFilter<"Tag"> | string
-    color?: StringNullableFilter<"Tag"> | string | null
     createdAt?: DateTimeFilter<"Tag"> | Date | string
     updatedAt?: DateTimeFilter<"Tag"> | Date | string
     userId?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     tasks?: TaskListRelationFilter
   }, "id">
@@ -10225,10 +11502,10 @@ export namespace Prisma {
   export type TagOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    color?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    color?: SortOrderInput | SortOrder
     _count?: TagCountOrderByAggregateInput
     _max?: TagMaxOrderByAggregateInput
     _min?: TagMinOrderByAggregateInput
@@ -10240,128 +11517,128 @@ export namespace Prisma {
     NOT?: TagScalarWhereWithAggregatesInput | TagScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Tag"> | string
     name?: StringWithAggregatesFilter<"Tag"> | string
-    color?: StringNullableWithAggregatesFilter<"Tag"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
     userId?: StringWithAggregatesFilter<"Tag"> | string
+    color?: StringNullableWithAggregatesFilter<"Tag"> | string | null
   }
 
   export type UserCreateInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
-    lists?: ListCreateNestedManyWithoutUserInput
-    tasks?: TaskCreateNestedManyWithoutUserInput
     tags?: TagCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    lists?: UserListCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    lists?: ListUncheckedCreateNestedManyWithoutUserInput
-    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    lists?: UserListUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
-    lists?: ListUpdateManyWithoutUserNestedInput
-    tasks?: TaskUpdateManyWithoutUserNestedInput
     tags?: TagUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    lists?: UserListUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    lists?: ListUncheckedUpdateManyWithoutUserNestedInput
-    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    lists?: UserListUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
   }
 
   export type UserUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
   }
 
   export type AccountCreateInput = {
@@ -10561,89 +11838,148 @@ export namespace Prisma {
   export type ListCreateInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutListsInput
+    color?: string | null
+    description?: string | null
     tasks?: TaskCreateNestedManyWithoutListInput
+    users?: UserListCreateNestedManyWithoutListInput
   }
 
   export type ListUncheckedCreateInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
+    color?: string | null
+    description?: string | null
     tasks?: TaskUncheckedCreateNestedManyWithoutListInput
+    users?: UserListUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ListUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutListsNestedInput
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TaskUpdateManyWithoutListNestedInput
+    users?: UserListUpdateManyWithoutListNestedInput
   }
 
   export type ListUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TaskUncheckedUpdateManyWithoutListNestedInput
+    users?: UserListUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type ListCreateManyInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
+    color?: string | null
+    description?: string | null
   }
 
   export type ListUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ListUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserListCreateInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    list: ListCreateNestedOneWithoutUsersInput
+    user: UserCreateNestedOneWithoutListsInput
+  }
+
+  export type UserListUncheckedCreateInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    listId: string
+  }
+
+  export type UserListUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    list?: ListUpdateOneRequiredWithoutUsersNestedInput
+    user?: UserUpdateOneRequiredWithoutListsNestedInput
+  }
+
+  export type UserListUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    listId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserListCreateManyInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    listId: string
+  }
+
+  export type UserListUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserListUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    listId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTasksInput
+    dueDate?: Date | string | null
+    severity?: string
     list?: ListCreateNestedOneWithoutTasksInput
     parent?: TaskCreateNestedOneWithoutSubtasksInput
     subtasks?: TaskCreateNestedManyWithoutParentInput
+    user: UserCreateNestedOneWithoutTasksInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -10651,13 +11987,13 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
     parentId?: string | null
     subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
@@ -10667,15 +12003,15 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     list?: ListUpdateOneWithoutTasksNestedInput
     parent?: TaskUpdateOneWithoutSubtasksNestedInput
     subtasks?: TaskUpdateManyWithoutParentNestedInput
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -10683,13 +12019,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
@@ -10699,13 +12035,13 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
     parentId?: string | null
   }
 
@@ -10713,33 +12049,33 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagCreateInput = {
     id?: string
     name: string
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    color?: string | null
     user: UserCreateNestedOneWithoutTagsInput
     tasks?: TaskCreateNestedManyWithoutTagsInput
   }
@@ -10747,19 +12083,19 @@ export namespace Prisma {
   export type TagUncheckedCreateInput = {
     id?: string
     name: string
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    color?: string | null
     tasks?: TaskUncheckedCreateNestedManyWithoutTagsInput
   }
 
   export type TagUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutTagsNestedInput
     tasks?: TaskUpdateManyWithoutTagsNestedInput
   }
@@ -10767,37 +12103,37 @@ export namespace Prisma {
   export type TagUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
     tasks?: TaskUncheckedUpdateManyWithoutTagsNestedInput
   }
 
   export type TagCreateManyInput = {
     id?: string
     name: string
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    color?: string | null
   }
 
   export type TagUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -10841,6 +12177,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -10850,11 +12191,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
   export type JsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -10892,10 +12228,10 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
-  export type ListListRelationFilter = {
-    every?: ListWhereInput
-    some?: ListWhereInput
-    none?: ListWhereInput
+  export type TagListRelationFilter = {
+    every?: TagWhereInput
+    some?: TagWhereInput
+    none?: TagWhereInput
   }
 
   export type TaskListRelationFilter = {
@@ -10904,10 +12240,10 @@ export namespace Prisma {
     none?: TaskWhereInput
   }
 
-  export type TagListRelationFilter = {
-    every?: TagWhereInput
-    some?: TagWhereInput
-    none?: TagWhereInput
+  export type UserListListRelationFilter = {
+    every?: UserListWhereInput
+    some?: UserListWhereInput
+    none?: UserListWhereInput
   }
 
   export type SortOrderInput = {
@@ -10923,7 +12259,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type ListOrderByRelationAggregateInput = {
+  export type TagOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10931,7 +12267,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type TagOrderByRelationAggregateInput = {
+  export type UserListOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10939,40 +12275,40 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
-    emailVerified?: SortOrder
     image?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    lastLogin?: SortOrder
+    emailVerified?: SortOrder
     isActive?: SortOrder
+    lastLogin?: SortOrder
     preferences?: SortOrder
+    role?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
-    emailVerified?: SortOrder
     image?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    lastLogin?: SortOrder
+    emailVerified?: SortOrder
     isActive?: SortOrder
+    lastLogin?: SortOrder
+    role?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
-    emailVerified?: SortOrder
     image?: SortOrder
-    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    lastLogin?: SortOrder
+    emailVerified?: SortOrder
     isActive?: SortOrder
+    lastLogin?: SortOrder
+    role?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -11025,6 +12361,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -11037,14 +12381,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
   export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -11210,31 +12546,82 @@ export namespace Prisma {
   export type ListCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
-    color?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
   }
 
   export type ListMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
-    color?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
+    color?: SortOrder
+    description?: SortOrder
   }
 
   export type ListMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     color?: SortOrder
+    description?: SortOrder
+  }
+
+  export type EnumCollaborationRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.CollaborationRole | EnumCollaborationRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumCollaborationRoleFilter<$PrismaModel> | $Enums.CollaborationRole
+  }
+
+  export type ListScalarRelationFilter = {
+    is?: ListWhereInput
+    isNot?: ListWhereInput
+  }
+
+  export type UserListUserIdListIdCompoundUniqueInput = {
+    userId: string
+    listId: string
+  }
+
+  export type UserListCountOrderByAggregateInput = {
+    id?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    listId?: SortOrder
+  }
+
+  export type UserListMaxOrderByAggregateInput = {
+    id?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    listId?: SortOrder
+  }
+
+  export type UserListMinOrderByAggregateInput = {
+    id?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    listId?: SortOrder
+  }
+
+  export type EnumCollaborationRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CollaborationRole | EnumCollaborationRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel> | $Enums.CollaborationRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCollaborationRoleFilter<$PrismaModel>
+    _max?: NestedEnumCollaborationRoleFilter<$PrismaModel>
   }
 
   export type ListNullableScalarRelationFilter = {
@@ -11251,13 +12638,13 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    severity?: SortOrder
-    dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    dueDate?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    severity?: SortOrder
     parentId?: SortOrder
   }
 
@@ -11265,13 +12652,13 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    severity?: SortOrder
-    dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    dueDate?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    severity?: SortOrder
     parentId?: SortOrder
   }
 
@@ -11279,41 +12666,41 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     description?: SortOrder
-    severity?: SortOrder
-    dueDate?: SortOrder
     completed?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    dueDate?: SortOrder
     userId?: SortOrder
     listId?: SortOrder
+    severity?: SortOrder
     parentId?: SortOrder
   }
 
   export type TagCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    color?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    color?: SortOrder
   }
 
   export type TagMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    color?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    color?: SortOrder
   }
 
   export type TagMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
-    color?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     userId?: SortOrder
+    color?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -11330,11 +12717,11 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
-  export type ListCreateNestedManyWithoutUserInput = {
-    create?: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput> | ListCreateWithoutUserInput[] | ListUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: ListCreateOrConnectWithoutUserInput | ListCreateOrConnectWithoutUserInput[]
-    createMany?: ListCreateManyUserInputEnvelope
-    connect?: ListWhereUniqueInput | ListWhereUniqueInput[]
+  export type TagCreateNestedManyWithoutUserInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
   }
 
   export type TaskCreateNestedManyWithoutUserInput = {
@@ -11344,11 +12731,11 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
-  export type TagCreateNestedManyWithoutUserInput = {
-    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
-    createMany?: TagCreateManyUserInputEnvelope
-    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  export type UserListCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput> | UserListCreateWithoutUserInput[] | UserListUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutUserInput | UserListCreateOrConnectWithoutUserInput[]
+    createMany?: UserListCreateManyUserInputEnvelope
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -11365,11 +12752,11 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
-  export type ListUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput> | ListCreateWithoutUserInput[] | ListUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: ListCreateOrConnectWithoutUserInput | ListCreateOrConnectWithoutUserInput[]
-    createMany?: ListCreateManyUserInputEnvelope
-    connect?: ListWhereUniqueInput | ListWhereUniqueInput[]
+  export type TagUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
   }
 
   export type TaskUncheckedCreateNestedManyWithoutUserInput = {
@@ -11379,11 +12766,11 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
-  export type TagUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
-    createMany?: TagCreateManyUserInputEnvelope
-    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+  export type UserListUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput> | UserListCreateWithoutUserInput[] | UserListUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutUserInput | UserListCreateOrConnectWithoutUserInput[]
+    createMany?: UserListCreateManyUserInputEnvelope
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -11398,12 +12785,12 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type AccountUpdateManyWithoutUserNestedInput = {
@@ -11434,18 +12821,18 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type ListUpdateManyWithoutUserNestedInput = {
-    create?: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput> | ListCreateWithoutUserInput[] | ListUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: ListCreateOrConnectWithoutUserInput | ListCreateOrConnectWithoutUserInput[]
-    upsert?: ListUpsertWithWhereUniqueWithoutUserInput | ListUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: ListCreateManyUserInputEnvelope
-    set?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    disconnect?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    delete?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    connect?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    update?: ListUpdateWithWhereUniqueWithoutUserInput | ListUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: ListUpdateManyWithWhereWithoutUserInput | ListUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: ListScalarWhereInput | ListScalarWhereInput[]
+  export type TagUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
   }
 
   export type TaskUpdateManyWithoutUserNestedInput = {
@@ -11462,18 +12849,18 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
-  export type TagUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
-    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TagCreateManyUserInputEnvelope
-    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  export type UserListUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput> | UserListCreateWithoutUserInput[] | UserListUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutUserInput | UserListCreateOrConnectWithoutUserInput[]
+    upsert?: UserListUpsertWithWhereUniqueWithoutUserInput | UserListUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserListCreateManyUserInputEnvelope
+    set?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    disconnect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    delete?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    update?: UserListUpdateWithWhereUniqueWithoutUserInput | UserListUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserListUpdateManyWithWhereWithoutUserInput | UserListUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserListScalarWhereInput | UserListScalarWhereInput[]
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
@@ -11504,18 +12891,18 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
-  export type ListUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput> | ListCreateWithoutUserInput[] | ListUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: ListCreateOrConnectWithoutUserInput | ListCreateOrConnectWithoutUserInput[]
-    upsert?: ListUpsertWithWhereUniqueWithoutUserInput | ListUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: ListCreateManyUserInputEnvelope
-    set?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    disconnect?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    delete?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    connect?: ListWhereUniqueInput | ListWhereUniqueInput[]
-    update?: ListUpdateWithWhereUniqueWithoutUserInput | ListUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: ListUpdateManyWithWhereWithoutUserInput | ListUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: ListScalarWhereInput | ListScalarWhereInput[]
+  export type TagUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
+    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TagCreateManyUserInputEnvelope
+    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
+    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
   }
 
   export type TaskUncheckedUpdateManyWithoutUserNestedInput = {
@@ -11532,18 +12919,18 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
-  export type TagUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput> | TagCreateWithoutUserInput[] | TagUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: TagCreateOrConnectWithoutUserInput | TagCreateOrConnectWithoutUserInput[]
-    upsert?: TagUpsertWithWhereUniqueWithoutUserInput | TagUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: TagCreateManyUserInputEnvelope
-    set?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    disconnect?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    delete?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
-    update?: TagUpdateWithWhereUniqueWithoutUserInput | TagUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: TagUpdateManyWithWhereWithoutUserInput | TagUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: TagScalarWhereInput | TagScalarWhereInput[]
+  export type UserListUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput> | UserListCreateWithoutUserInput[] | UserListUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutUserInput | UserListCreateOrConnectWithoutUserInput[]
+    upsert?: UserListUpsertWithWhereUniqueWithoutUserInput | UserListUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserListCreateManyUserInputEnvelope
+    set?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    disconnect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    delete?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    update?: UserListUpdateWithWhereUniqueWithoutUserInput | UserListUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserListUpdateManyWithWhereWithoutUserInput | UserListUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserListScalarWhereInput | UserListScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -11582,17 +12969,18 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
-  export type UserCreateNestedOneWithoutListsInput = {
-    create?: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutListsInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type TaskCreateNestedManyWithoutListInput = {
     create?: XOR<TaskCreateWithoutListInput, TaskUncheckedCreateWithoutListInput> | TaskCreateWithoutListInput[] | TaskUncheckedCreateWithoutListInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutListInput | TaskCreateOrConnectWithoutListInput[]
     createMany?: TaskCreateManyListInputEnvelope
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
+  }
+
+  export type UserListCreateNestedManyWithoutListInput = {
+    create?: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput> | UserListCreateWithoutListInput[] | UserListUncheckedCreateWithoutListInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutListInput | UserListCreateOrConnectWithoutListInput[]
+    createMany?: UserListCreateManyListInputEnvelope
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
   }
 
   export type TaskUncheckedCreateNestedManyWithoutListInput = {
@@ -11602,12 +12990,11 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
-  export type UserUpdateOneRequiredWithoutListsNestedInput = {
-    create?: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutListsInput
-    upsert?: UserUpsertWithoutListsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutListsInput, UserUpdateWithoutListsInput>, UserUncheckedUpdateWithoutListsInput>
+  export type UserListUncheckedCreateNestedManyWithoutListInput = {
+    create?: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput> | UserListCreateWithoutListInput[] | UserListUncheckedCreateWithoutListInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutListInput | UserListCreateOrConnectWithoutListInput[]
+    createMany?: UserListCreateManyListInputEnvelope
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
   }
 
   export type TaskUpdateManyWithoutListNestedInput = {
@@ -11624,6 +13011,20 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
+  export type UserListUpdateManyWithoutListNestedInput = {
+    create?: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput> | UserListCreateWithoutListInput[] | UserListUncheckedCreateWithoutListInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutListInput | UserListCreateOrConnectWithoutListInput[]
+    upsert?: UserListUpsertWithWhereUniqueWithoutListInput | UserListUpsertWithWhereUniqueWithoutListInput[]
+    createMany?: UserListCreateManyListInputEnvelope
+    set?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    disconnect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    delete?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    update?: UserListUpdateWithWhereUniqueWithoutListInput | UserListUpdateWithWhereUniqueWithoutListInput[]
+    updateMany?: UserListUpdateManyWithWhereWithoutListInput | UserListUpdateManyWithWhereWithoutListInput[]
+    deleteMany?: UserListScalarWhereInput | UserListScalarWhereInput[]
+  }
+
   export type TaskUncheckedUpdateManyWithoutListNestedInput = {
     create?: XOR<TaskCreateWithoutListInput, TaskUncheckedCreateWithoutListInput> | TaskCreateWithoutListInput[] | TaskUncheckedCreateWithoutListInput[]
     connectOrCreate?: TaskCreateOrConnectWithoutListInput | TaskCreateOrConnectWithoutListInput[]
@@ -11638,10 +13039,50 @@ export namespace Prisma {
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutTasksInput = {
-    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
+  export type UserListUncheckedUpdateManyWithoutListNestedInput = {
+    create?: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput> | UserListCreateWithoutListInput[] | UserListUncheckedCreateWithoutListInput[]
+    connectOrCreate?: UserListCreateOrConnectWithoutListInput | UserListCreateOrConnectWithoutListInput[]
+    upsert?: UserListUpsertWithWhereUniqueWithoutListInput | UserListUpsertWithWhereUniqueWithoutListInput[]
+    createMany?: UserListCreateManyListInputEnvelope
+    set?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    disconnect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    delete?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    connect?: UserListWhereUniqueInput | UserListWhereUniqueInput[]
+    update?: UserListUpdateWithWhereUniqueWithoutListInput | UserListUpdateWithWhereUniqueWithoutListInput[]
+    updateMany?: UserListUpdateManyWithWhereWithoutListInput | UserListUpdateManyWithWhereWithoutListInput[]
+    deleteMany?: UserListScalarWhereInput | UserListScalarWhereInput[]
+  }
+
+  export type ListCreateNestedOneWithoutUsersInput = {
+    create?: XOR<ListCreateWithoutUsersInput, ListUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: ListCreateOrConnectWithoutUsersInput
+    connect?: ListWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutListsInput = {
+    create?: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutListsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type EnumCollaborationRoleFieldUpdateOperationsInput = {
+    set?: $Enums.CollaborationRole
+  }
+
+  export type ListUpdateOneRequiredWithoutUsersNestedInput = {
+    create?: XOR<ListCreateWithoutUsersInput, ListUncheckedCreateWithoutUsersInput>
+    connectOrCreate?: ListCreateOrConnectWithoutUsersInput
+    upsert?: ListUpsertWithoutUsersInput
+    connect?: ListWhereUniqueInput
+    update?: XOR<XOR<ListUpdateToOneWithWhereWithoutUsersInput, ListUpdateWithoutUsersInput>, ListUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutListsNestedInput = {
+    create?: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutListsInput
+    upsert?: UserUpsertWithoutListsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutListsInput, UserUpdateWithoutListsInput>, UserUncheckedUpdateWithoutListsInput>
   }
 
   export type ListCreateNestedOneWithoutTasksInput = {
@@ -11663,6 +13104,12 @@ export namespace Prisma {
     connect?: TaskWhereUniqueInput | TaskWhereUniqueInput[]
   }
 
+  export type UserCreateNestedOneWithoutTasksInput = {
+    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type TagCreateNestedManyWithoutTasksInput = {
     create?: XOR<TagCreateWithoutTasksInput, TagUncheckedCreateWithoutTasksInput> | TagCreateWithoutTasksInput[] | TagUncheckedCreateWithoutTasksInput[]
     connectOrCreate?: TagCreateOrConnectWithoutTasksInput | TagCreateOrConnectWithoutTasksInput[]
@@ -11680,14 +13127,6 @@ export namespace Prisma {
     create?: XOR<TagCreateWithoutTasksInput, TagUncheckedCreateWithoutTasksInput> | TagCreateWithoutTasksInput[] | TagUncheckedCreateWithoutTasksInput[]
     connectOrCreate?: TagCreateOrConnectWithoutTasksInput | TagCreateOrConnectWithoutTasksInput[]
     connect?: TagWhereUniqueInput | TagWhereUniqueInput[]
-  }
-
-  export type UserUpdateOneRequiredWithoutTasksNestedInput = {
-    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
-    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
-    upsert?: UserUpsertWithoutTasksInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTasksInput, UserUpdateWithoutTasksInput>, UserUncheckedUpdateWithoutTasksInput>
   }
 
   export type ListUpdateOneWithoutTasksNestedInput = {
@@ -11722,6 +13161,14 @@ export namespace Prisma {
     update?: TaskUpdateWithWhereUniqueWithoutParentInput | TaskUpdateWithWhereUniqueWithoutParentInput[]
     updateMany?: TaskUpdateManyWithWhereWithoutParentInput | TaskUpdateManyWithWhereWithoutParentInput[]
     deleteMany?: TaskScalarWhereInput | TaskScalarWhereInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutTasksNestedInput = {
+    create?: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTasksInput
+    upsert?: UserUpsertWithoutTasksInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTasksInput, UserUpdateWithoutTasksInput>, UserUncheckedUpdateWithoutTasksInput>
   }
 
   export type TagUpdateManyWithoutTasksNestedInput = {
@@ -11855,6 +13302,11 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -11864,11 +13316,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -11941,6 +13388,14 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -11953,14 +13408,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -12011,6 +13458,23 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumCollaborationRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.CollaborationRole | EnumCollaborationRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumCollaborationRoleFilter<$PrismaModel> | $Enums.CollaborationRole
+  }
+
+  export type NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CollaborationRole | EnumCollaborationRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CollaborationRole[] | ListEnumCollaborationRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumCollaborationRoleWithAggregatesFilter<$PrismaModel> | $Enums.CollaborationRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCollaborationRoleFilter<$PrismaModel>
+    _max?: NestedEnumCollaborationRoleFilter<$PrismaModel>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -12073,33 +13537,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ListCreateWithoutUserInput = {
+  export type TagCreateWithoutUserInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    tasks?: TaskCreateNestedManyWithoutListInput
+    color?: string | null
+    tasks?: TaskCreateNestedManyWithoutTagsInput
   }
 
-  export type ListUncheckedCreateWithoutUserInput = {
+  export type TagUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    tasks?: TaskUncheckedCreateNestedManyWithoutListInput
+    color?: string | null
+    tasks?: TaskUncheckedCreateNestedManyWithoutTagsInput
   }
 
-  export type ListCreateOrConnectWithoutUserInput = {
-    where: ListWhereUniqueInput
-    create: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput>
+  export type TagCreateOrConnectWithoutUserInput = {
+    where: TagWhereUniqueInput
+    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
   }
 
-  export type ListCreateManyUserInputEnvelope = {
-    data: ListCreateManyUserInput | ListCreateManyUserInput[]
+  export type TagCreateManyUserInputEnvelope = {
+    data: TagCreateManyUserInput | TagCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -12107,11 +13569,11 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
+    severity?: string
     list?: ListCreateNestedOneWithoutTasksInput
     parent?: TaskCreateNestedOneWithoutSubtasksInput
     subtasks?: TaskCreateNestedManyWithoutParentInput
@@ -12122,12 +13584,12 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     listId?: string | null
+    severity?: string
     parentId?: string | null
     subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
@@ -12143,31 +13605,29 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TagCreateWithoutUserInput = {
+  export type UserListCreateWithoutUserInput = {
     id?: string
-    name: string
-    color?: string | null
+    role?: $Enums.CollaborationRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    tasks?: TaskCreateNestedManyWithoutTagsInput
+    list: ListCreateNestedOneWithoutUsersInput
   }
 
-  export type TagUncheckedCreateWithoutUserInput = {
+  export type UserListUncheckedCreateWithoutUserInput = {
     id?: string
-    name: string
-    color?: string | null
+    role?: $Enums.CollaborationRole
     createdAt?: Date | string
     updatedAt?: Date | string
-    tasks?: TaskUncheckedCreateNestedManyWithoutTagsInput
+    listId: string
   }
 
-  export type TagCreateOrConnectWithoutUserInput = {
-    where: TagWhereUniqueInput
-    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
+  export type UserListCreateOrConnectWithoutUserInput = {
+    where: UserListWhereUniqueInput
+    create: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput>
   }
 
-  export type TagCreateManyUserInputEnvelope = {
-    data: TagCreateManyUserInput | TagCreateManyUserInput[]
+  export type UserListCreateManyUserInputEnvelope = {
+    data: UserListCreateManyUserInput | UserListCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -12231,33 +13691,32 @@ export namespace Prisma {
     expires?: DateTimeFilter<"Session"> | Date | string
   }
 
-  export type ListUpsertWithWhereUniqueWithoutUserInput = {
-    where: ListWhereUniqueInput
-    update: XOR<ListUpdateWithoutUserInput, ListUncheckedUpdateWithoutUserInput>
-    create: XOR<ListCreateWithoutUserInput, ListUncheckedCreateWithoutUserInput>
+  export type TagUpsertWithWhereUniqueWithoutUserInput = {
+    where: TagWhereUniqueInput
+    update: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
+    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
   }
 
-  export type ListUpdateWithWhereUniqueWithoutUserInput = {
-    where: ListWhereUniqueInput
-    data: XOR<ListUpdateWithoutUserInput, ListUncheckedUpdateWithoutUserInput>
+  export type TagUpdateWithWhereUniqueWithoutUserInput = {
+    where: TagWhereUniqueInput
+    data: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
   }
 
-  export type ListUpdateManyWithWhereWithoutUserInput = {
-    where: ListScalarWhereInput
-    data: XOR<ListUpdateManyMutationInput, ListUncheckedUpdateManyWithoutUserInput>
+  export type TagUpdateManyWithWhereWithoutUserInput = {
+    where: TagScalarWhereInput
+    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type ListScalarWhereInput = {
-    AND?: ListScalarWhereInput | ListScalarWhereInput[]
-    OR?: ListScalarWhereInput[]
-    NOT?: ListScalarWhereInput | ListScalarWhereInput[]
-    id?: StringFilter<"List"> | string
-    name?: StringFilter<"List"> | string
-    description?: StringNullableFilter<"List"> | string | null
-    color?: StringNullableFilter<"List"> | string | null
-    createdAt?: DateTimeFilter<"List"> | Date | string
-    updatedAt?: DateTimeFilter<"List"> | Date | string
-    userId?: StringFilter<"List"> | string
+  export type TagScalarWhereInput = {
+    AND?: TagScalarWhereInput | TagScalarWhereInput[]
+    OR?: TagScalarWhereInput[]
+    NOT?: TagScalarWhereInput | TagScalarWhereInput[]
+    id?: StringFilter<"Tag"> | string
+    name?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    userId?: StringFilter<"Tag"> | string
+    color?: StringNullableFilter<"Tag"> | string | null
   }
 
   export type TaskUpsertWithWhereUniqueWithoutUserInput = {
@@ -12283,78 +13742,78 @@ export namespace Prisma {
     id?: StringFilter<"Task"> | string
     title?: StringFilter<"Task"> | string
     description?: StringNullableFilter<"Task"> | string | null
-    severity?: StringFilter<"Task"> | string
-    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     completed?: BoolFilter<"Task"> | boolean
     createdAt?: DateTimeFilter<"Task"> | Date | string
     updatedAt?: DateTimeFilter<"Task"> | Date | string
+    dueDate?: DateTimeNullableFilter<"Task"> | Date | string | null
     userId?: StringFilter<"Task"> | string
     listId?: StringNullableFilter<"Task"> | string | null
+    severity?: StringFilter<"Task"> | string
     parentId?: StringNullableFilter<"Task"> | string | null
   }
 
-  export type TagUpsertWithWhereUniqueWithoutUserInput = {
-    where: TagWhereUniqueInput
-    update: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
-    create: XOR<TagCreateWithoutUserInput, TagUncheckedCreateWithoutUserInput>
+  export type UserListUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserListWhereUniqueInput
+    update: XOR<UserListUpdateWithoutUserInput, UserListUncheckedUpdateWithoutUserInput>
+    create: XOR<UserListCreateWithoutUserInput, UserListUncheckedCreateWithoutUserInput>
   }
 
-  export type TagUpdateWithWhereUniqueWithoutUserInput = {
-    where: TagWhereUniqueInput
-    data: XOR<TagUpdateWithoutUserInput, TagUncheckedUpdateWithoutUserInput>
+  export type UserListUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserListWhereUniqueInput
+    data: XOR<UserListUpdateWithoutUserInput, UserListUncheckedUpdateWithoutUserInput>
   }
 
-  export type TagUpdateManyWithWhereWithoutUserInput = {
-    where: TagScalarWhereInput
-    data: XOR<TagUpdateManyMutationInput, TagUncheckedUpdateManyWithoutUserInput>
+  export type UserListUpdateManyWithWhereWithoutUserInput = {
+    where: UserListScalarWhereInput
+    data: XOR<UserListUpdateManyMutationInput, UserListUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type TagScalarWhereInput = {
-    AND?: TagScalarWhereInput | TagScalarWhereInput[]
-    OR?: TagScalarWhereInput[]
-    NOT?: TagScalarWhereInput | TagScalarWhereInput[]
-    id?: StringFilter<"Tag"> | string
-    name?: StringFilter<"Tag"> | string
-    color?: StringNullableFilter<"Tag"> | string | null
-    createdAt?: DateTimeFilter<"Tag"> | Date | string
-    updatedAt?: DateTimeFilter<"Tag"> | Date | string
-    userId?: StringFilter<"Tag"> | string
+  export type UserListScalarWhereInput = {
+    AND?: UserListScalarWhereInput | UserListScalarWhereInput[]
+    OR?: UserListScalarWhereInput[]
+    NOT?: UserListScalarWhereInput | UserListScalarWhereInput[]
+    id?: StringFilter<"UserList"> | string
+    role?: EnumCollaborationRoleFilter<"UserList"> | $Enums.CollaborationRole
+    createdAt?: DateTimeFilter<"UserList"> | Date | string
+    updatedAt?: DateTimeFilter<"UserList"> | Date | string
+    userId?: StringFilter<"UserList"> | string
+    listId?: StringFilter<"UserList"> | string
   }
 
   export type UserCreateWithoutAccountsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     sessions?: SessionCreateNestedManyWithoutUserInput
-    lists?: ListCreateNestedManyWithoutUserInput
-    tasks?: TaskCreateNestedManyWithoutUserInput
     tags?: TagCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    lists?: UserListCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    lists?: ListUncheckedCreateNestedManyWithoutUserInput
-    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    lists?: UserListUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -12377,72 +13836,72 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
-    lists?: ListUpdateManyWithoutUserNestedInput
-    tasks?: TaskUpdateManyWithoutUserNestedInput
     tags?: TagUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    lists?: UserListUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    lists?: ListUncheckedUpdateManyWithoutUserNestedInput
-    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    lists?: UserListUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
-    lists?: ListCreateNestedManyWithoutUserInput
-    tasks?: TaskCreateNestedManyWithoutUserInput
     tags?: TagCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
+    lists?: UserListCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    lists?: ListUncheckedCreateNestedManyWithoutUserInput
-    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    lists?: UserListUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -12465,91 +13924,50 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
-    lists?: ListUpdateManyWithoutUserNestedInput
-    tasks?: TaskUpdateManyWithoutUserNestedInput
     tags?: TagUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+    lists?: UserListUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    lists?: ListUncheckedUpdateManyWithoutUserNestedInput
-    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
     tags?: TagUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserCreateWithoutListsInput = {
-    id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: string | null
-    image?: string | null
-    role?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    lastLogin?: Date | string | null
-    isActive?: boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountCreateNestedManyWithoutUserInput
-    sessions?: SessionCreateNestedManyWithoutUserInput
-    tasks?: TaskCreateNestedManyWithoutUserInput
-    tags?: TagCreateNestedManyWithoutUserInput
-  }
-
-  export type UserUncheckedCreateWithoutListsInput = {
-    id?: string
-    name?: string | null
-    email?: string | null
-    emailVerified?: string | null
-    image?: string | null
-    role?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    lastLogin?: Date | string | null
-    isActive?: boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
-    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
-    tags?: TagUncheckedCreateNestedManyWithoutUserInput
-  }
-
-  export type UserCreateOrConnectWithoutListsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    lists?: UserListUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TaskCreateWithoutListInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTasksInput
+    dueDate?: Date | string | null
+    severity?: string
     parent?: TaskCreateNestedOneWithoutSubtasksInput
     subtasks?: TaskCreateNestedManyWithoutParentInput
+    user: UserCreateNestedOneWithoutTasksInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -12557,12 +13975,12 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
+    severity?: string
     parentId?: string | null
     subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
@@ -12578,51 +13996,30 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type UserUpsertWithoutListsInput = {
-    update: XOR<UserUpdateWithoutListsInput, UserUncheckedUpdateWithoutListsInput>
-    create: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
-    where?: UserWhereInput
+  export type UserListCreateWithoutListInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutListsInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutListsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutListsInput, UserUncheckedUpdateWithoutListsInput>
+  export type UserListUncheckedCreateWithoutListInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
   }
 
-  export type UserUpdateWithoutListsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    tasks?: TaskUpdateManyWithoutUserNestedInput
-    tags?: TagUpdateManyWithoutUserNestedInput
+  export type UserListCreateOrConnectWithoutListInput = {
+    where: UserListWhereUniqueInput
+    create: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput>
   }
 
-  export type UserUncheckedUpdateWithoutListsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
-    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+  export type UserListCreateManyListInputEnvelope = {
+    data: UserListCreateManyListInput | UserListCreateManyListInput[]
+    skipDuplicates?: boolean
   }
 
   export type TaskUpsertWithWhereUniqueWithoutListInput = {
@@ -12641,65 +14038,184 @@ export namespace Prisma {
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutListInput>
   }
 
-  export type UserCreateWithoutTasksInput = {
+  export type UserListUpsertWithWhereUniqueWithoutListInput = {
+    where: UserListWhereUniqueInput
+    update: XOR<UserListUpdateWithoutListInput, UserListUncheckedUpdateWithoutListInput>
+    create: XOR<UserListCreateWithoutListInput, UserListUncheckedCreateWithoutListInput>
+  }
+
+  export type UserListUpdateWithWhereUniqueWithoutListInput = {
+    where: UserListWhereUniqueInput
+    data: XOR<UserListUpdateWithoutListInput, UserListUncheckedUpdateWithoutListInput>
+  }
+
+  export type UserListUpdateManyWithWhereWithoutListInput = {
+    where: UserListScalarWhereInput
+    data: XOR<UserListUpdateManyMutationInput, UserListUncheckedUpdateManyWithoutListInput>
+  }
+
+  export type ListCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string | null
+    description?: string | null
+    tasks?: TaskCreateNestedManyWithoutListInput
+  }
+
+  export type ListUncheckedCreateWithoutUsersInput = {
+    id?: string
+    name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    color?: string | null
+    description?: string | null
+    tasks?: TaskUncheckedCreateNestedManyWithoutListInput
+  }
+
+  export type ListCreateOrConnectWithoutUsersInput = {
+    where: ListWhereUniqueInput
+    create: XOR<ListCreateWithoutUsersInput, ListUncheckedCreateWithoutUsersInput>
+  }
+
+  export type UserCreateWithoutListsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
-    lists?: ListCreateNestedManyWithoutUserInput
     tags?: TagCreateNestedManyWithoutUserInput
+    tasks?: TaskCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutTasksInput = {
+  export type UserUncheckedCreateWithoutListsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    lists?: ListUncheckedCreateNestedManyWithoutUserInput
     tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutTasksInput = {
+  export type UserCreateOrConnectWithoutListsInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    create: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
+  }
+
+  export type ListUpsertWithoutUsersInput = {
+    update: XOR<ListUpdateWithoutUsersInput, ListUncheckedUpdateWithoutUsersInput>
+    create: XOR<ListCreateWithoutUsersInput, ListUncheckedCreateWithoutUsersInput>
+    where?: ListWhereInput
+  }
+
+  export type ListUpdateToOneWithWhereWithoutUsersInput = {
+    where?: ListWhereInput
+    data: XOR<ListUpdateWithoutUsersInput, ListUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type ListUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tasks?: TaskUpdateManyWithoutListNestedInput
+  }
+
+  export type ListUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    tasks?: TaskUncheckedUpdateManyWithoutListNestedInput
+  }
+
+  export type UserUpsertWithoutListsInput = {
+    update: XOR<UserUpdateWithoutListsInput, UserUncheckedUpdateWithoutListsInput>
+    create: XOR<UserCreateWithoutListsInput, UserUncheckedCreateWithoutListsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutListsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutListsInput, UserUncheckedUpdateWithoutListsInput>
+  }
+
+  export type UserUpdateWithoutListsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    tasks?: TaskUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutListsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ListCreateWithoutTasksInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutListsInput
+    color?: string | null
+    description?: string | null
+    users?: UserListCreateNestedManyWithoutListInput
   }
 
   export type ListUncheckedCreateWithoutTasksInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
+    color?: string | null
+    description?: string | null
+    users?: UserListUncheckedCreateNestedManyWithoutListInput
   }
 
   export type ListCreateOrConnectWithoutTasksInput = {
@@ -12711,14 +14227,14 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTasksInput
+    dueDate?: Date | string | null
+    severity?: string
     list?: ListCreateNestedOneWithoutTasksInput
     parent?: TaskCreateNestedOneWithoutSubtasksInput
+    user: UserCreateNestedOneWithoutTasksInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -12726,13 +14242,13 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
     parentId?: string | null
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
   }
@@ -12746,14 +14262,14 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTasksInput
+    dueDate?: Date | string | null
+    severity?: string
     list?: ListCreateNestedOneWithoutTasksInput
     subtasks?: TaskCreateNestedManyWithoutParentInput
+    user: UserCreateNestedOneWithoutTasksInput
     tags?: TagCreateNestedManyWithoutTasksInput
   }
 
@@ -12761,13 +14277,13 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
     subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
     tags?: TagUncheckedCreateNestedManyWithoutTasksInput
   }
@@ -12782,74 +14298,68 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserCreateWithoutTasksInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified?: string | null
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    tags?: TagCreateNestedManyWithoutUserInput
+    lists?: UserListCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTasksInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    emailVerified?: string | null
+    isActive?: boolean
+    lastLogin?: Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    tags?: TagUncheckedCreateNestedManyWithoutUserInput
+    lists?: UserListUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTasksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+  }
+
   export type TagCreateWithoutTasksInput = {
     id?: string
     name: string
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    color?: string | null
     user: UserCreateNestedOneWithoutTagsInput
   }
 
   export type TagUncheckedCreateWithoutTasksInput = {
     id?: string
     name: string
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     userId: string
+    color?: string | null
   }
 
   export type TagCreateOrConnectWithoutTasksInput = {
     where: TagWhereUniqueInput
     create: XOR<TagCreateWithoutTasksInput, TagUncheckedCreateWithoutTasksInput>
-  }
-
-  export type UserUpsertWithoutTasksInput = {
-    update: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
-    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutTasksInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
-  }
-
-  export type UserUpdateWithoutTasksInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountUpdateManyWithoutUserNestedInput
-    sessions?: SessionUpdateManyWithoutUserNestedInput
-    lists?: ListUpdateManyWithoutUserNestedInput
-    tags?: TagUpdateManyWithoutUserNestedInput
-  }
-
-  export type UserUncheckedUpdateWithoutTasksInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
-    image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    isActive?: BoolFieldUpdateOperationsInput | boolean
-    preferences?: NullableJsonNullValueInput | InputJsonValue
-    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    lists?: ListUncheckedUpdateManyWithoutUserNestedInput
-    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ListUpsertWithoutTasksInput = {
@@ -12866,21 +14376,21 @@ export namespace Prisma {
   export type ListUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutListsNestedInput
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    users?: UserListUpdateManyWithoutListNestedInput
   }
 
   export type ListUncheckedUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    users?: UserListUncheckedUpdateManyWithoutListNestedInput
   }
 
   export type TaskUpsertWithoutSubtasksInput = {
@@ -12898,14 +14408,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     list?: ListUpdateOneWithoutTasksNestedInput
     parent?: TaskUpdateOneWithoutSubtasksNestedInput
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -12913,13 +14423,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
   }
@@ -12938,6 +14448,53 @@ export namespace Prisma {
   export type TaskUpdateManyWithWhereWithoutParentInput = {
     where: TaskScalarWhereInput
     data: XOR<TaskUpdateManyMutationInput, TaskUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type UserUpsertWithoutTasksInput = {
+    update: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
+    create: XOR<UserCreateWithoutTasksInput, UserUncheckedCreateWithoutTasksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTasksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTasksInput, UserUncheckedUpdateWithoutTasksInput>
+  }
+
+  export type UserUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    tags?: TagUpdateManyWithoutUserNestedInput
+    lists?: UserListUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTasksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    tags?: TagUncheckedUpdateManyWithoutUserNestedInput
+    lists?: UserListUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TagUpsertWithWhereUniqueWithoutTasksInput = {
@@ -12960,36 +14517,36 @@ export namespace Prisma {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
-    lists?: ListCreateNestedManyWithoutUserInput
     tasks?: TaskCreateNestedManyWithoutUserInput
+    lists?: UserListCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTagsInput = {
     id?: string
     name?: string | null
     email?: string | null
-    emailVerified?: string | null
     image?: string | null
-    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    lastLogin?: Date | string | null
+    emailVerified?: string | null
     isActive?: boolean
+    lastLogin?: Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    lists?: ListUncheckedCreateNestedManyWithoutUserInput
     tasks?: TaskUncheckedCreateNestedManyWithoutUserInput
+    lists?: UserListUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTagsInput = {
@@ -13001,28 +14558,28 @@ export namespace Prisma {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutTasksInput
+    dueDate?: Date | string | null
+    severity?: string
     list?: ListCreateNestedOneWithoutTasksInput
     parent?: TaskCreateNestedOneWithoutSubtasksInput
     subtasks?: TaskCreateNestedManyWithoutParentInput
+    user: UserCreateNestedOneWithoutTasksInput
   }
 
   export type TaskUncheckedCreateWithoutTagsInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
     parentId?: string | null
     subtasks?: TaskUncheckedCreateNestedManyWithoutParentInput
   }
@@ -13047,36 +14604,36 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
-    lists?: ListUpdateManyWithoutUserNestedInput
     tasks?: TaskUpdateManyWithoutUserNestedInput
+    lists?: UserListUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTagsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerified?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     preferences?: NullableJsonNullValueInput | InputJsonValue
+    role?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    lists?: ListUncheckedUpdateManyWithoutUserNestedInput
     tasks?: TaskUncheckedUpdateManyWithoutUserNestedInput
+    lists?: UserListUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type TaskUpsertWithWhereUniqueWithoutTagsInput = {
@@ -13115,34 +14672,33 @@ export namespace Prisma {
     expires: Date | string
   }
 
-  export type ListCreateManyUserInput = {
+  export type TagCreateManyUserInput = {
     id?: string
     name: string
-    description?: string | null
-    color?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    color?: string | null
   }
 
   export type TaskCreateManyUserInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     listId?: string | null
+    severity?: string
     parentId?: string | null
   }
 
-  export type TagCreateManyUserInput = {
+  export type UserListCreateManyUserInput = {
     id?: string
-    name: string
-    color?: string | null
+    role?: $Enums.CollaborationRole
     createdAt?: Date | string
     updatedAt?: Date | string
+    listId: string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -13205,44 +14761,41 @@ export namespace Prisma {
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ListUpdateWithoutUserInput = {
+  export type TagUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tasks?: TaskUpdateManyWithoutListNestedInput
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    tasks?: TaskUpdateManyWithoutTagsNestedInput
   }
 
-  export type ListUncheckedUpdateWithoutUserInput = {
+  export type TagUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tasks?: TaskUncheckedUpdateManyWithoutListNestedInput
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    tasks?: TaskUncheckedUpdateManyWithoutTagsNestedInput
   }
 
-  export type ListUncheckedUpdateManyWithoutUserInput = {
+  export type TagUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: NullableStringFieldUpdateOperationsInput | string | null
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TaskUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     list?: ListUpdateOneWithoutTasksNestedInput
     parent?: TaskUpdateOneWithoutSubtasksNestedInput
     subtasks?: TaskUpdateManyWithoutParentNestedInput
@@ -13253,12 +14806,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
@@ -13268,66 +14821,72 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type TagUpdateWithoutUserInput = {
+  export type UserListUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tasks?: TaskUpdateManyWithoutTagsNestedInput
+    list?: ListUpdateOneRequiredWithoutUsersNestedInput
   }
 
-  export type TagUncheckedUpdateWithoutUserInput = {
+  export type UserListUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    tasks?: TaskUncheckedUpdateManyWithoutTagsNestedInput
+    listId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type TagUncheckedUpdateManyWithoutUserInput = {
+  export type UserListUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    listId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateManyListInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
+    severity?: string
     parentId?: string | null
+  }
+
+  export type UserListCreateManyListInput = {
+    id?: string
+    role?: $Enums.CollaborationRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
   }
 
   export type TaskUpdateWithoutListInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parent?: TaskUpdateOneWithoutSubtasksNestedInput
     subtasks?: TaskUpdateManyWithoutParentNestedInput
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -13335,12 +14894,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
@@ -13350,40 +14909,64 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type UserListUpdateWithoutListInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutListsNestedInput
+  }
+
+  export type UserListUncheckedUpdateWithoutListInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type UserListUncheckedUpdateManyWithoutListInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: EnumCollaborationRoleFieldUpdateOperationsInput | $Enums.CollaborationRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TaskCreateManyParentInput = {
     id?: string
     title: string
     description?: string | null
-    severity?: string
-    dueDate?: Date | string | null
     completed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    dueDate?: Date | string | null
     userId: string
     listId?: string | null
+    severity?: string
   }
 
   export type TaskUpdateWithoutParentInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     list?: ListUpdateOneWithoutTasksNestedInput
     subtasks?: TaskUpdateManyWithoutParentNestedInput
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
     tags?: TagUpdateManyWithoutTasksNestedInput
   }
 
@@ -13391,13 +14974,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
     tags?: TagUncheckedUpdateManyWithoutTasksNestedInput
   }
@@ -13406,68 +14989,68 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
   }
 
   export type TagUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
     user?: UserUpdateOneRequiredWithoutTagsNestedInput
   }
 
   export type TagUncheckedUpdateWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TagUncheckedUpdateManyWithoutTasksInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    color?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TaskUpdateWithoutTagsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutTasksNestedInput
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     list?: ListUpdateOneWithoutTasksNestedInput
     parent?: TaskUpdateOneWithoutSubtasksNestedInput
     subtasks?: TaskUpdateManyWithoutParentNestedInput
+    user?: UserUpdateOneRequiredWithoutTasksNestedInput
   }
 
   export type TaskUncheckedUpdateWithoutTagsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     subtasks?: TaskUncheckedUpdateManyWithoutParentNestedInput
   }
@@ -13476,13 +15059,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    severity?: StringFieldUpdateOperationsInput | string
-    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     completed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     userId?: StringFieldUpdateOperationsInput | string
     listId?: NullableStringFieldUpdateOperationsInput | string | null
+    severity?: StringFieldUpdateOperationsInput | string
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
