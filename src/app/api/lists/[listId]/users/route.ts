@@ -12,7 +12,7 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { listId } = params;
+    const { listId } = await params;
 
     // Verify the user has access to this list
     const userList = await prisma.userList.findUnique({
@@ -117,9 +117,7 @@ export async function POST(
     await prisma.task.updateMany({
       where: {
         listId,
-        userId: {
-          isNull: true
-        }
+        userId: null
       },
       data: {
         userId: session.user.id,

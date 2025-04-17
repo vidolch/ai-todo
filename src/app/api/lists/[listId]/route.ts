@@ -13,7 +13,7 @@ export async function PATCH(
     }
 
     const { name, description, color, invitedUsers } = await req.json();
-    const { listId } = params;
+    const { listId } = await params;
 
     if (!name) {
       return new NextResponse("Name is required", { status: 400 });
@@ -81,6 +81,17 @@ export async function PATCH(
             userId: { in: usersToRemove }
           }
         });
+
+        // Assign existing unassigned tasks to the current user
+        await prisma.task.updateMany({
+          where: {
+            listId,
+            userId: { in: usersToRemove }
+          },
+          data: {
+            userId: session.user.id
+          }
+        });
       }
       
       // 2. Add new users
@@ -93,18 +104,6 @@ export async function PATCH(
           }))
         });
         
-        // Assign existing unassigned tasks to the current user
-        await prisma.task.updateMany({
-          where: {
-            listId,
-            userId: {
-              isNull: true
-            }
-          },
-          data: {
-            userId: session.user.id
-          }
-        });
       }
       
       // 3. Update roles for existing users
