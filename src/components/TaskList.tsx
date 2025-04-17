@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Task } from "@/types/task";
 import { TaskForm } from "./TaskForm";
 import { TaskListHeader } from "./TaskListHeader";
@@ -36,10 +36,6 @@ export function TaskList() {
   const [quickTaskTitles, setQuickTaskTitles] = useState<Record<string, string>>({});
   const [collapsedLists, setCollapsedLists] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    fetchTasks();
-    fetchLists();
-  }, []);
 
   useEffect(() => {
     // Fetch tasks for each list
@@ -54,7 +50,7 @@ export function TaskList() {
     }
   }, [lists]);
 
-  const fetchLists = async () => {
+  const fetchLists = useCallback(async () => {
     try {
       const response = await fetch("/api/lists");
       if (response.ok) {
@@ -72,7 +68,14 @@ export function TaskList() {
     } catch (error) {
       console.error("Error fetching lists:", error);
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    fetchTasks();
+    fetchLists();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const fetchListTasks = async (listId: string) => {
     try {

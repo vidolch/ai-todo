@@ -46,7 +46,18 @@ export async function GET(
     });
 
     // Transform the data to match the expected format
-    const formattedUsers = listUsers.map((item: any) => ({
+    const formattedUsers = listUsers.map((item: 
+      {
+        userId: string;
+        role: string;
+        user: {
+          id: string;
+          name: string;
+          email: string;
+          image: string;
+        };
+      }
+    ) => ({
       userId: item.userId,
       role: item.role,
       user: item.user

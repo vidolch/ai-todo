@@ -3,7 +3,7 @@
 import { Task as TaskType } from "@/types/task";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
-import { Pencil, Trash2, List, Calendar } from "lucide-react";
+import { Pencil, Trash2, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Subtasks } from "./Subtasks";
@@ -20,12 +20,6 @@ interface TaskProps {
   onAddSubtask: (parentId: string, title: string) => void;
   isCurrentUserTask?: boolean;
 }
-
-const severityColors = {
-  low: "bg-blue-500/20 text-blue-300",
-  normal: "bg-yellow-500/20 text-yellow-300",
-  critical: "bg-red-500/20 text-red-300",
-};
 
 export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask, isCurrentUserTask }: TaskProps) {
   const subtasks = task.subtasks || [];
