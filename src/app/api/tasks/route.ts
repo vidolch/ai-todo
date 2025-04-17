@@ -16,7 +16,26 @@ export async function GET() {
       include: {
         tags: true,
         parent: true,
-        subtasks: true,
+        subtasks: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        },
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true
+          }
+        }
       },
       orderBy: {
         createdAt: "desc",
@@ -58,6 +77,14 @@ export async function POST(request: Request) {
         tags: true,
         parent: true,
         subtasks: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true
+          }
+        }
       },
     });
 

@@ -24,6 +24,7 @@ const DONE_LIST_ID = "done";
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<List[]>([]);
+  const [listTasks, setListTasks] = useState<Record<string, Task[]>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
@@ -35,6 +36,19 @@ export function TaskList() {
     fetchTasks();
     fetchLists();
   }, []);
+
+  useEffect(() => {
+    // Fetch tasks for each list
+    const fetchAllListTasks = async () => {
+      for (const list of lists) {
+        await fetchListTasks(list.id);
+      }
+    };
+    
+    if (lists.length > 0) {
+      fetchAllListTasks();
+    }
+  }, [lists]);
 
   const fetchLists = async () => {
     try {
@@ -53,6 +67,21 @@ export function TaskList() {
       }
     } catch (error) {
       console.error("Error fetching lists:", error);
+    }
+  };
+
+  const fetchListTasks = async (listId: string) => {
+    try {
+      const response = await fetch(`/api/lists/${listId}/tasks`);
+      if (response.ok) {
+        const data = await response.json();
+        setListTasks(prev => ({
+          ...prev,
+          [listId]: data
+        }));
+      }
+    } catch (error) {
+      console.error(`Error fetching tasks for list ${listId}:`, error);
     }
   };
 
@@ -104,7 +133,24 @@ export function TaskList() {
   const handleToggleComplete = async (taskId: string) => {
     try {
       const task = tasks.find((t) => t.id === taskId);
-      if (!task) return;
+      
+      // Check if the task exists in any of the lists
+      let listTask = null;
+      let listId = null;
+      
+      for (const [id, tasksInList] of Object.entries(listTasks)) {
+        const foundTask = tasksInList.find(t => t.id === taskId);
+        if (foundTask) {
+          listTask = foundTask;
+          listId = id;
+          break;
+        }
+      }
+      
+      // Use the found task or fall back to the one from general tasks
+      const taskToUpdate = listTask || task;
+      
+      if (!taskToUpdate) return;
 
       const response = await fetch(`/api/tasks/${taskId}`, {
         method: "PATCH",
@@ -112,19 +158,21 @@ export function TaskList() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: task.title,
-          description: task.description,
-          severity: task.severity,
-          dueDate: task.dueDate,
-          completed: !task.completed,
-          listId: task.listId,
-          parentId: task.parentId,
-          tags: task.tags?.map(tag => tag.id),
+          title: taskToUpdate.title,
+          description: taskToUpdate.description,
+          severity: taskToUpdate.severity,
+          dueDate: taskToUpdate.dueDate,
+          completed: !taskToUpdate.completed,
+          listId: taskToUpdate.listId,
+          parentId: taskToUpdate.parentId,
+          tags: taskToUpdate.tags?.map(tag => tag.id),
         }),
       });
 
       if (response.ok) {
         const updatedTask = await response.json();
+        
+        // Update tasks in the main task list
         setTasks((prevTasks) =>
           prevTasks.map((t) => {
             if (t.id === updatedTask.id) {
@@ -142,6 +190,11 @@ export function TaskList() {
             return t;
           })
         );
+        
+        // If this was a list task, refresh the list's tasks
+        if (listId) {
+          fetchListTasks(listId);
+        }
       }
     } catch (error) {
       console.error("Error toggling task completion:", error);
@@ -268,8 +321,11 @@ export function TaskList() {
     });
 
   const getListTasks = (listId: string) => {
-    return tasks
-      .filter((task) => !task.completed && task.listId === listId && !task.parentId && (!editingTask || task.id !== editingTask.id))
+    // Get tasks from the listTasks state, which includes tasks from all collaborators
+    const tasksForList = listTasks[listId] || [];
+    
+    return tasksForList
+      .filter((task) => !task.completed && !task.parentId && (!editingTask || task.id !== editingTask.id))
       .sort((a, b) => {
         if (a.dueDate && b.dueDate) {
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
@@ -379,7 +435,10 @@ export function TaskList() {
               tasks={getListTasks(list.id)}
               isCollapsed={collapsedLists[list.id]}
               quickAddValue={quickTaskTitles[list.id] || ""}
-              onToggleCollapse={toggleListCollapse}
+              onToggleCollapse={(listId) => {
+                toggleListCollapse(listId);
+                fetchListTasks(listId); // Refresh tasks when expanding a list
+              }}
               onQuickAddChange={(listId, value) => 
                 setQuickTaskTitles(prev => ({ ...prev, [listId]: value }))
               }

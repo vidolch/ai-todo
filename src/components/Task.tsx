@@ -9,6 +9,8 @@ import { Badge } from "./ui/badge";
 import { Subtasks } from "./Subtasks";
 import { Progress } from "./ui/progress";
 import { format } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { useEffect, useState } from "react";
 
 interface TaskProps {
   task: TaskType;
@@ -28,6 +30,26 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
   const subtasks = task.subtasks || [];
   const completedSubtasks = subtasks.filter((st) => st.completed).length;
   const progress = subtasks.length > 0 ? (completedSubtasks / subtasks.length) * 100 : 0;
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  // Fetch current user ID
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('/api/user');
+        if (response.ok) {
+          const userData = await response.json();
+          setCurrentUserId(userData.id);
+        }
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
+
+  const isCurrentUser = task.user && currentUserId && task.user.id === currentUserId;
 
   return (
     <div className="p-4 rounded-lg border border-white/10 bg-white/5 space-y-3">
@@ -48,12 +70,26 @@ export function Task({ task, onToggleComplete, onDelete, onEdit, onAddSubtask }:
             {task.description && (
               <p className="text-sm text-gray-400">{task.description}</p>
             )}
-            {task.dueDate && (
-              <div className="flex items-center gap-1 text-sm text-gray-400">
-                <Calendar className="h-3 w-3" />
-                <span>{format(new Date(task.dueDate), "MMM d, yyyy")}</span>
-              </div>
-            )}
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400">
+              {task.dueDate && (
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-3 w-3" />
+                  <span>{format(new Date(task.dueDate), "MMM d, yyyy")}</span>
+                </div>
+              )}
+              {task.user && (
+                <div className="flex items-center gap-1">
+                  <Avatar className="h-4 w-4">
+                    <AvatarImage src={task.user.image || undefined} alt={task.user.name || ''} />
+                    <AvatarFallback className="text-[10px]">{task.user.name?.[0] || task.user.email?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <span>
+                    {task.user.name || task.user.email}
+                    {isCurrentUser && " (you)"}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2">

@@ -16,4 +16,10 @@ export interface Task {
     id: string;
     name: string;
   }[];
+  user?: {
+    id: string;
+    name: string | null;
+    email: string | null;
+    image: string | null;
+  }
 } 
