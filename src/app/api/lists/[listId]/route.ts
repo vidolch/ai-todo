@@ -12,7 +12,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const { name, description, color } = await req.json();
+    const { name, description, color, invitedUsers } = await req.json();
     const { listId } = params;
 
     if (!name) {
@@ -38,6 +38,7 @@ export async function PATCH(
       return new NextResponse("Permission denied", { status: 403 });
     }
 
+    // Update basic list information
     const updatedList = await prisma.list.update({
       where: {
         id: listId,
@@ -48,6 +49,79 @@ export async function PATCH(
         color,
       },
     });
+
+    // If invitedUsers is provided, update the user list
+    if (invitedUsers && Array.isArray(invitedUsers)) {
+      // Get current users for this list
+      const currentUsers = await prisma.userList.findMany({
+        where: { listId },
+        select: { userId: true }
+      });
+      
+      const currentUserIds = currentUsers.map((u: { userId: string }) => u.userId);
+      const newUserIds = invitedUsers.map((u: { userId: string }) => u.userId);
+      
+      // Find users to remove (in current but not in new)
+      const usersToRemove = currentUserIds.filter((id: string) => !newUserIds.includes(id) && id !== session.user.id);
+      
+      // Find users to add (in new but not in current)
+      const usersToAdd = invitedUsers.filter((u: { userId: string }) => !currentUserIds.includes(u.userId));
+      
+      // Find users to update roles
+      const usersToUpdate = invitedUsers.filter((u: { userId: string }) => 
+        currentUserIds.includes(u.userId) && u.userId !== session.user.id);
+      
+      // Perform the operations
+      
+      // 1. Remove users
+      if (usersToRemove.length > 0) {
+        await prisma.userList.deleteMany({
+          where: {
+            listId,
+            userId: { in: usersToRemove }
+          }
+        });
+      }
+      
+      // 2. Add new users
+      if (usersToAdd.length > 0) {
+        await prisma.userList.createMany({
+          data: usersToAdd.map(u => ({
+            listId,
+            userId: u.userId,
+            role: u.role
+          }))
+        });
+        
+        // Assign existing unassigned tasks to the current user
+        await prisma.task.updateMany({
+          where: {
+            listId,
+            userId: {
+              isNull: true
+            }
+          },
+          data: {
+            userId: session.user.id
+          }
+        });
+      }
+      
+      // 3. Update roles for existing users
+      for (const user of usersToUpdate) {
+        await prisma.userList.update({
+          where: {
+            userId_listId: {
+              userId: user.userId,
+              listId
+            }
+          },
+          data: {
+            role: user.role
+          }
+        });
+      }
+    }
 
     return NextResponse.json(updatedList);
   } catch (error) {
