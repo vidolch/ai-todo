@@ -37,14 +37,16 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
+# Copy Prisma files for migrations
+COPY --from=builder /app/prisma ./prisma
+
+# Create script to run migrations and start the app
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Set the correct permissions
 RUN chown -R nextjs:nodejs /app
 
-# Create script to run migrations and start the app
-RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode server.js' > /app/start.sh && chmod +x /app/start.sh
-
-# Copy Prisma files for migrations
-COPY --from=builder /app/prisma ./prisma
 
 # Switch to non-root user
 USER nextjs
