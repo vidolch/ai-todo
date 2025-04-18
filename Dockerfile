@@ -46,5 +46,11 @@ USER nextjs
 # Expose the port the app will run on
 EXPOSE 3000
 
+# Copy Prisma files for migrations
+COPY --from=builder /app/prisma ./prisma
+
+# Create script to run migrations and start the app
+RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode server.js' > /app/start.sh && chmod +x /app/start.sh
+
 # Start the app
-CMD ["node", "server.js"] 
+CMD ["/app/start.sh"] 
