@@ -44,7 +44,18 @@ export async function GET(
           }
         },
         parent: true,
-        subtasks: true,
+        subtasks: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        },
       },
       orderBy: {
         createdAt: "desc"

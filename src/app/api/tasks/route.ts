@@ -76,7 +76,18 @@ export async function POST(request: Request) {
       include: {
         tags: true,
         parent: true,
-        subtasks: true,
+        subtasks: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                image: true
+              }
+            }
+          }
+        },
         user: {
           select: {
             id: true,

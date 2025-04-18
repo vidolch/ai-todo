@@ -31,7 +31,6 @@ ENV NODE_ENV production
 # Create a non-root user to run the app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-USER nextjs
 
 # Copy built application
 COPY --from=builder /app/public ./public
@@ -40,6 +39,9 @@ COPY --from=builder /app/.next/static ./.next/static
 
 # Set the correct permissions
 RUN chown -R nextjs:nodejs /app
+
+# Switch to non-root user
+USER nextjs
 
 # Expose the port the app will run on
 EXPOSE 3000

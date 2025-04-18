@@ -213,11 +213,20 @@ export function TaskList() {
           fetchListTasks(listId);
         }
         
-        // If this task has a parent task, and that parent is in a list, refresh that list too
+        // If this task has a parent task, check if the parent is in the main tasks list or in a list
         if (updatedTask.parentId) {
+          // First check if the parent is in the main tasks list
           const parentTask = tasks.find(t => t.id === updatedTask.parentId);
-          if (parentTask && parentTask.listId) {
+          if (parentTask?.listId) {
             fetchListTasks(parentTask.listId);
+          } else if (!parentTask) {
+            // If parent not found in main tasks, check in listTasks
+            for (const [id, tasksInList] of Object.entries(listTasks)) {
+              if (tasksInList.some(t => t.id === updatedTask.parentId)) {
+                fetchListTasks(id);
+                break;
+              }
+            }
           }
         }
       }
@@ -245,6 +254,7 @@ export function TaskList() {
       // Find the task in the main tasks list or in any of the list tasks
       const task = tasks.find((t) => t.id === taskId);
       let listId = task?.listId;
+      let parentId = task?.parentId;
       
       // If not found in main tasks, check list tasks
       if (!task || !listId) {
@@ -252,6 +262,7 @@ export function TaskList() {
           const foundTask = tasksInList.find(t => t.id === taskId);
           if (foundTask) {
             listId = id;
+            parentId = foundTask.parentId;
             break;
           }
         }
@@ -262,11 +273,33 @@ export function TaskList() {
       });
 
       if (response.ok) {
-        setTasks((prevTasks) => prevTasks.filter((t) => t.id !== taskId));
+        // Update tasks in the main tasks list
+        setTasks((prevTasks) => {
+          // First filter out the deleted task
+          const filteredTasks = prevTasks.filter((t) => t.id !== taskId);
+          
+          // Then update any parent task to remove this subtask from its subtasks array
+          return filteredTasks.map(t => {
+            if (t.subtasks?.some(st => st.id === taskId)) {
+              return {
+                ...t,
+                subtasks: t.subtasks.filter(st => st.id !== taskId)
+              };
+            }
+            return t;
+          });
+        });
         
-        // If the deleted task belonged to a list, refresh that list's tasks
+        // Update listTasks state if needed
         if (listId) {
+          // If the deleted task is in a list, refresh that list
           fetchListTasks(listId);
+        } else if (parentId) {
+          // If the deleted task is a subtask and its parent might be in a list
+          const parentTask = tasks.find(t => t.id === parentId);
+          if (parentTask?.listId) {
+            fetchListTasks(parentTask.listId);
+          }
         }
       }
     } catch (error) {
@@ -298,6 +331,8 @@ export function TaskList() {
 
         if (response.ok) {
           const updatedTask = await response.json();
+          
+          // Update tasks in main task list and handle subtasks
           setTasks((prevTasks) =>
             prevTasks.map((t) => {
               if (t.id === updatedTask.id) {
@@ -325,6 +360,14 @@ export function TaskList() {
           if (editingTask.listId && editingTask.listId !== updatedTask.listId) {
             fetchListTasks(editingTask.listId);
           }
+          
+          // If the edited task is a subtask, check if its parent is in a list
+          if (updatedTask.parentId) {
+            const parentTask = tasks.find(t => t.id === updatedTask.parentId);
+            if (parentTask?.listId) {
+              fetchListTasks(parentTask.listId);
+            }
+          }
         }
       } else {
         const response = await fetch("/api/tasks", {
@@ -342,6 +385,14 @@ export function TaskList() {
           // Refresh list tasks if the new task belongs to a list
           if (newTask.listId) {
             fetchListTasks(newTask.listId);
+          }
+          
+          // If the new task is a subtask, check if its parent is in a list
+          if (newTask.parentId) {
+            const parentTask = tasks.find(t => t.id === newTask.parentId);
+            if (parentTask?.listId) {
+              fetchListTasks(parentTask.listId);
+            }
           }
         }
       }
@@ -384,12 +435,18 @@ export function TaskList() {
 
       if (response.ok) {
         const newSubtask = await response.json();
+        
+        // Update the main tasks list
         setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.id === parentId
-              ? { ...task, subtasks: [...(task.subtasks || []), newSubtask] }
-              : task
-          )
+          prevTasks.map((task) => {
+            if (task.id === parentId) {
+              return { 
+                ...task, 
+                subtasks: [...(task.subtasks || []), newSubtask] 
+              };
+            }
+            return task;
+          })
         );
         
         // If the parent task belongs to a list, refresh that list's tasks

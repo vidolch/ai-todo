@@ -67,7 +67,13 @@ export async function PATCH(
 
     // If not the owner and not just updating completion or doesn't have list access
     if (!isTaskOwner && (!isCompletionUpdate || !hasListAccess)) {
-      return new NextResponse("Unauthorized to modify this task", { status: 403 });
+      if (currentTask.parentId) {
+        return new NextResponse("You can only edit subtasks you created", { status: 403 });
+      } else if (currentTask.listId) {
+        return new NextResponse("You can only complete tasks in a shared list or edit your own tasks", { status: 403 });
+      } else {
+        return new NextResponse("You can only edit your own tasks", { status: 403 });
+      }
     }
 
     // For owners, allow full update
@@ -137,10 +143,28 @@ export async function DELETE(
 
     const { taskId } = await params;
 
+    // First check if the task exists
+    const task = await prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+      select: {
+        userId: true,
+      },
+    });
+
+    if (!task) {
+      return new NextResponse("Task not found", { status: 404 });
+    }
+
+    // Only allow the creator of the task to delete it
+    if (task.userId !== session.user.id) {
+      return new NextResponse("You can only delete your own tasks", { status: 403 });
+    }
+
     await prisma.task.delete({
       where: {
         id: taskId,
-        userId: session.user.id,
       },
     });
 
