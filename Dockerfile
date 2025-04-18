@@ -40,17 +40,17 @@ COPY --from=builder /app/.next/static ./.next/static
 # Set the correct permissions
 RUN chown -R nextjs:nodejs /app
 
+# Create script to run migrations and start the app
+RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode server.js' > /app/start.sh && chmod +x /app/start.sh
+
+# Copy Prisma files for migrations
+COPY --from=builder /app/prisma ./prisma
+
 # Switch to non-root user
 USER nextjs
 
 # Expose the port the app will run on
 EXPOSE 3000
-
-# Copy Prisma files for migrations
-COPY --from=builder /app/prisma ./prisma
-
-# Create script to run migrations and start the app
-RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode server.js' > /app/start.sh && chmod +x /app/start.sh
 
 # Start the app
 CMD ["/app/start.sh"] 
